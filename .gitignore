@@ -1,0 +1,8 @@
+# OSX stuff
+.DS_Store
+
+# Sass Stuff
+.sass-cache
+
+# Ignore node modules
+Dev/node_modules
