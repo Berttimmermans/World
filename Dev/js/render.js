@@ -4,11 +4,12 @@
     this.canvas = canvas;
     this.grid = grid;
     this.map = map;
-    this.color = [ "#303056","#303056","#303056","#303056","#3D3D69","#5B66A7","#7784CF","#CBB361","#81BA84","#49A34d","#469A47","#408d3E","#346E29","#346E29","#6B5629","#6B5629","#564D39","#4D4D48","#7E7F82","#C4C4C4" ];
+    this.color = [ "#14142b","#21213d","#2b2b4a","#303056","#3D3D69","#5B66A7","#7784CF","#CBB361","#81BA84","#49A34d","#469A47","#408d3E","#346E29","#346E29","#6B5629","#6B5629","#564D39","#4D4D48","#7E7F82","#C4C4C4" ];
   }
   
   Render.prototype.draw = (function(data){
     
+    this.level = 0;
     this.canvas.dom.width = window.innerWidth;
     this.canvas.dom.height = window.innerHeight;
     
@@ -17,10 +18,14 @@
     canvas.width = window.innerWidth*window.devicePixelRatio;
     canvas.height = window.innerHeight*window.devicePixelRatio;
     
-    for(var i in data){
-      console.log((i % 2));
-      for(var j in data[i]){
-       this.drawBlock( context, i, j, data[i][j] );
+    
+    for(var l = 0; l < this.color.length; l++){
+      for(var y in data){
+        for(var x in data[y]){
+          if(data[y][x] >= l) {
+            this.drawBlock( context, l, y, x, data[y][x] )
+          }
+        }
       }
     }
     
@@ -29,12 +34,15 @@
     
   });
   
-  Render.prototype.drawBlock = (function(context, y, x, z){
+  Render.prototype.drawBlock = (function(context, l, y, x, z){
     
     var grid = this.map.grid;
     
     x = grid*x+((y % 2)*(grid/2));
-    y = grid*(y/2);
+    y = grid*(y/2)-(l*(grid/2))+(0*grid);
+    
+    x = x-(grid/2);
+    y = y-(grid/2);
     
     context.strokeStyle = this.color[z];
     
