@@ -13,14 +13,14 @@
     
     // Map 
     this.map = {
-      "grid": 80,
+      "grid": 50,
       "seed" : {
-        "width": 30,
-        "height": 25
+        "width": 15,
+        "height": 20
       },
-      "range" : 10,
-      "loops" : 3,
-      "smoothLoops" : 1
+      "range" : 12,
+      "loops" : 4,
+      "smoothLoops" : 2
     }
     
   };
