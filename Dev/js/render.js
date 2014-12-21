@@ -39,7 +39,7 @@
   
   Render.prototype.generateBlock = (function(z){
     
-    var grid = this.map.grid;
+    var grid = this.map.grid*window.devicePixelRatio;
     var canvas = document.createElement('canvas');
 		var context = canvas.getContext('2d');
 		
@@ -54,7 +54,7 @@
    
   Render.prototype.drawBlock = (function(context, y, x, z){ 
     
-    var grid = this.map.grid;
+    var grid = this.map.grid*window.devicePixelRatio;
     
     // draw top
     context.fillStyle = this.color[z];
@@ -99,7 +99,7 @@
   
   Render.prototype.placeBlock = (function(context, y, x, l, block){
     
-    var grid = this.map.grid;
+    var grid = this.map.grid*window.devicePixelRatio;
     
     x = grid*x+((y % 2)*(grid/2));
     y = grid*(y/2)-(l*(grid/2))+(0*grid);

@@ -13,7 +13,7 @@
     
     // Map 
     this.map = {
-      "grid": 50,
+      "grid": 25,
       "seed" : {
         "width": 15,
         "height": 20
