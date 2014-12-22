@@ -23,6 +23,13 @@
       
       var block = this.generateBlock(l);
       
+      if(l == 7){
+        context.fillStyle = "rgba(48, 65, 107, 0.8);";
+        context.beginPath();
+        context.rect(0,0,canvas.width,canvas.height);
+        context.fill();
+      }
+      
       for(var y in data){
         for(var x in data[y]){
           if(data[y][x] == l) {
