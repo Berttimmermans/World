@@ -53,13 +53,16 @@
     canvas.width = grid*window.devicePixelRatio;
     canvas.height =(grid*1.5)*window.devicePixelRatio;
     
-    this.drawBlock(context, (grid/2), 0, z);
+    if(z == 7){
+      this.drawHalfBlock(context, (grid/2), 0, z);
+    } else {
+      this.drawFullBlock(context, (grid/2), 0, z);
+    }
     return canvas;
     
-  });
-    
+  }); 
    
-  Render.prototype.drawBlock = (function(context, y, x, z){ 
+  Render.prototype.drawFullBlock = (function(context, y, x, z){ 
     
     var grid = this.map.grid*window.devicePixelRatio;
     
@@ -98,6 +101,76 @@
     context.lineTo(x + grid, y + grid/2);
     context.lineTo(x + grid, y);
     context.lineTo(x + grid/2, y + grid/2);
+    context.closePath();
+    context.fill();
+    context.stroke();
+    
+  });
+   
+  Render.prototype.drawHalfBlock = (function(context, y, x, z){ 
+    
+    var grid = this.map.grid*window.devicePixelRatio;
+    
+    // draw top
+    context.fillStyle = this.color[z];
+    context.strokeStyle = this.color[z];
+    context.beginPath();
+    context.moveTo(x + grid/2, y - grid/2);
+    context.lineTo(x + grid, y);
+    context.lineTo(x + grid/2, y + grid/2);
+    context.lineTo(x, y);
+    context.lineTo(x + grid/2, y - grid/2);
+    context.closePath();
+    context.fill();
+    context.stroke();
+    
+    // draw left top
+    context.fillStyle = this.shadeColor(this.color[z], -0.2);
+    context.strokeStyle = this.shadeColor(this.color[z], -0.35);
+    context.beginPath();
+    context.moveTo(x, y);
+    context.lineTo(x + grid/2, y + grid/2);
+    context.lineTo(x + grid/2, y + grid*0.75);
+    context.lineTo(x, y + grid*0.25);
+    context.lineTo(x, y);
+    context.closePath();
+    context.fill();
+    context.stroke();
+    
+    // draw left bottom
+    context.fillStyle = this.shadeColor(this.color[z-1], -0.35);
+    context.strokeStyle = this.shadeColor(this.color[z-1], -0.40);
+    context.beginPath();
+    context.moveTo(x, y + grid*0.25);
+    context.lineTo(x + grid/2, y + grid*0.75);
+    context.lineTo(x + grid/2, y + grid);
+    context.lineTo(x, y + grid*0.5);
+    context.lineTo(x, y + grid*0.25);
+    context.fill();
+    context.stroke();
+    
+    // draw right
+    context.fillStyle = this.shadeColor(this.color[z], -0.4);
+    context.strokeStyle = this.shadeColor(this.color[z], -0.45);
+    context.beginPath();
+    context.moveTo(x + grid/2, y + grid/2);
+    context.lineTo(x + grid/2, y + grid*0.75);
+    context.lineTo(x + grid, y + grid*0.25);
+    context.lineTo(x + grid, y);
+    context.lineTo(x + grid/2, y + grid/2);
+    context.closePath();
+    context.fill();
+    context.stroke();
+    
+    // draw right bottom
+    context.fillStyle = this.shadeColor(this.color[z-1], -0.5);
+    context.strokeStyle = this.shadeColor(this.color[z-1], -0.55);
+    context.beginPath();
+    context.moveTo(x + grid, y + grid*0.25);
+    context.lineTo(x + grid/2, y + grid*0.75);
+    context.lineTo(x + grid/2, y + grid);
+    context.lineTo(x + grid, y + grid*0.5);
+    context.lineTo(x + grid, y + grid*0.25);
     context.closePath();
     context.fill();
     context.stroke();
