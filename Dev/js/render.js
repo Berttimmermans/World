@@ -4,7 +4,6 @@
     this.canvas = canvas;
     this.grid = grid;
     this.map = map;
-    this.color = [ "#14142b","#21213d","#2b2b4a","#303056","#3D3D69","#5B66A7","#7784CF","#CBB361","#81BA84","#49A34d","#469A47","#408d3E","#346E29","#346E29","#6B5629","#6B5629","#564D39","#4D4D48","#7E7F82","#C4C4C4" ];
   }
   
   Render.prototype.draw = (function(data){
@@ -19,11 +18,11 @@
     canvas.width = window.innerWidth*window.devicePixelRatio;
     canvas.height = window.innerHeight*window.devicePixelRatio;
     
-    for(var l = 0; l < this.color.length; l++){
+    for(var l = 0; l < this.map.color.length; l++){
       
       var block = this.generateBlock(l);
       
-      if(l == 7){
+      if(l  == this.map.waterLevel){
         context.fillStyle = "rgba(48, 65, 107, 0.8);";
         context.beginPath();
         context.rect(0,0,canvas.width,canvas.height);
@@ -33,6 +32,7 @@
       for(var y in this.data){
         for(var x in this.data[y]){
           if(this.data[y][x] == l || (this.data[y][x]-l) > 0 &&  (this.data[y][x]-l) <= 3) {
+          //if(this.data[y][x] >= l) {
             this.placeBlock(context, y, x, l, block);
           }
         }
@@ -53,7 +53,7 @@
     canvas.width = grid*window.devicePixelRatio;
     canvas.height =(grid*1.5)*window.devicePixelRatio;
     
-    if(z == 7){
+    if(z == this.map.waterLevel){
       this.drawHalfBlock(context, (grid/2), 0, z);
     } else {
       this.drawFullBlock(context, (grid/2), 0, z);
@@ -67,8 +67,8 @@
     var grid = this.map.grid*window.devicePixelRatio;
     
     // draw top
-    context.fillStyle = this.color[z];
-    context.strokeStyle = this.color[z];
+    context.fillStyle = this.map.color[z];
+    context.strokeStyle = this.map.color[z];
     context.beginPath();
     context.moveTo(x + grid/2, y - grid/2);
     context.lineTo(x + grid, y);
@@ -80,8 +80,8 @@
     context.stroke();
     
     // draw left
-    context.fillStyle = this.shadeColor(this.color[z], -0.2);
-    context.strokeStyle = this.shadeColor(this.color[z], -0.3);
+    context.fillStyle = this.shadeColor(this.map.color[z], -0.2);
+    context.strokeStyle = this.shadeColor(this.map.color[z], -0.3);
     context.beginPath();
     context.moveTo(x, y);
     context.lineTo(x + grid/2, y + grid/2);
@@ -93,8 +93,8 @@
     context.stroke();
     
     // draw right
-    context.fillStyle = this.shadeColor(this.color[z], -0.4);
-    context.strokeStyle = this.shadeColor(this.color[z], -0.5);
+    context.fillStyle = this.shadeColor(this.map.color[z], -0.4);
+    context.strokeStyle = this.shadeColor(this.map.color[z], -0.5);
     context.beginPath();
     context.moveTo(x + grid/2, y + grid/2);
     context.lineTo(x + grid/2, y + grid);
@@ -112,8 +112,8 @@
     var grid = this.map.grid*window.devicePixelRatio;
     
     // draw top
-    context.fillStyle = this.color[z];
-    context.strokeStyle = this.color[z];
+    context.fillStyle = this.map.color[z];
+    context.strokeStyle = this.map.color[z];
     context.beginPath();
     context.moveTo(x + grid/2, y - grid/2);
     context.lineTo(x + grid, y);
@@ -125,8 +125,8 @@
     context.stroke();
     
     // draw left top
-    context.fillStyle = this.shadeColor(this.color[z], -0.2);
-    context.strokeStyle = this.shadeColor(this.color[z], -0.35);
+    context.fillStyle = this.shadeColor(this.map.color[z], -0.2);
+    context.strokeStyle = this.shadeColor(this.map.color[z], -0.35);
     context.beginPath();
     context.moveTo(x, y);
     context.lineTo(x + grid/2, y + grid/2);
@@ -138,8 +138,8 @@
     context.stroke();
     
     // draw left bottom
-    context.fillStyle = this.shadeColor(this.color[z-1], -0.35);
-    context.strokeStyle = this.shadeColor(this.color[z-1], -0.40);
+    context.fillStyle = this.shadeColor(this.map.color[z-1], -0.35);
+    context.strokeStyle = this.shadeColor(this.map.color[z-1], -0.40);
     context.beginPath();
     context.moveTo(x, y + grid*0.25);
     context.lineTo(x + grid/2, y + grid*0.75);
@@ -150,8 +150,8 @@
     context.stroke();
     
     // draw right
-    context.fillStyle = this.shadeColor(this.color[z], -0.4);
-    context.strokeStyle = this.shadeColor(this.color[z], -0.45);
+    context.fillStyle = this.shadeColor(this.map.color[z], -0.4);
+    context.strokeStyle = this.shadeColor(this.map.color[z], -0.45);
     context.beginPath();
     context.moveTo(x + grid/2, y + grid/2);
     context.lineTo(x + grid/2, y + grid*0.75);
@@ -163,8 +163,8 @@
     context.stroke();
     
     // draw right bottom
-    context.fillStyle = this.shadeColor(this.color[z-1], -0.5);
-    context.strokeStyle = this.shadeColor(this.color[z-1], -0.55);
+    context.fillStyle = this.shadeColor(this.map.color[z-1], -0.5);
+    context.strokeStyle = this.shadeColor(this.map.color[z-1], -0.55);
     context.beginPath();
     context.moveTo(x + grid, y + grid*0.25);
     context.lineTo(x + grid/2, y + grid*0.75);

@@ -2,7 +2,7 @@
   
   function Generator(map){
     
-    this.range = map.range;
+    this.range = map.color.length;
     this.seed = map.seed;
     this.loops = map.loops;
     this.smoothLoops = map.smoothLoops;
@@ -44,6 +44,7 @@
 
     var low = (a <= b)? a : b; 
     var high = (a >= b)? a : b; 
+    
     var range = (high-low < this.range)? (high-low)+1 : this.range;
     var tile = Math.floor(Math.random() * range)+low;
     return (tile >= 0)? tile : 0;
@@ -144,7 +145,8 @@
     } else if(tiles.length == 2){
       return parseInt((tiles[0]+tiles[1])/2);
     } else if(tiles.length == 4){
-      return parseInt((tiles[0] + tiles[1]+tiles[2] + tiles[3])/2);
+      var tile = parseInt((tiles[0] + tiles[1]+tiles[2] + tiles[3])/3);
+      return (tile > this.range)? this.range : tile;
     }
   
     return 0;
