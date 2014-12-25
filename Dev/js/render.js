@@ -10,6 +10,7 @@
   Render.prototype.draw = (function(data){
     
     this.level = 0;
+    this.data = data;
     this.canvas.dom.width = window.innerWidth;
     this.canvas.dom.height = window.innerHeight;
     
@@ -17,7 +18,6 @@
 		var context = canvas.getContext('2d');
     canvas.width = window.innerWidth*window.devicePixelRatio;
     canvas.height = window.innerHeight*window.devicePixelRatio;
-    
     
     for(var l = 0; l < this.color.length; l++){
       
@@ -30,9 +30,9 @@
         context.fill();
       }
       
-      for(var y in data){
-        for(var x in data[y]){
-          if(data[y][x] == l) {
+      for(var y in this.data){
+        for(var x in this.data[y]){
+          if(this.data[y][x] == l || (this.data[y][x]-l) > 0 &&  (this.data[y][x]-l) <= 3) {
             this.placeBlock(context, y, x, l, block);
           }
         }
