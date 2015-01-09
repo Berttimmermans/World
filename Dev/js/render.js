@@ -1,8 +1,7 @@
 (function(){
   
-  function Render(canvas, grid, map){
+  function Render(canvas, map){
     this.canvas = canvas;
-    this.grid = grid;
     this.map = map;
   }
   

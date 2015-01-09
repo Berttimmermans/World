@@ -29,7 +29,7 @@
   Instance.prototype.Init = (function (){
   
     this.generator = new Generator(this.map);
-    this.render = new Render(this.canvas, this.grid, this.map);
+    this.render = new Render(this.canvas, this.map);
     
     // Generate map data
     this.data = this.generator.New();
@@ -42,6 +42,7 @@
     
     // Render map
     this.render.draw(this.data);
+    //console.log(JSON.stringify(this.data));
     
   });
   
