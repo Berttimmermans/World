@@ -1,202 +1,311 @@
 (function(){
   
-  function Render(canvas, map){
-    this.canvas = canvas;
-    this.map = map;
+  function Render(map){
+    
+    this.color = map.color;
+    this.range = this.color.length;
+    this.scale = 5;
+    
+    this.light = new THREE.Color( 0xFFFFFF );
+    this.shadow = new THREE.Color( 0xCCCCCC );
+    this.matrix = new THREE.Matrix4();
+    
   }
   
-  Render.prototype.draw = (function(data){
+  Render.prototype.Init = (function(data){
     
-    this.level = 0;
-    this.data = data;
-    this.canvas.dom.width = window.innerWidth;
-    this.canvas.dom.height = window.innerHeight;
+    // Setup Three Js renderer
+    this.renderer = new THREE.WebGLRenderer({ antialias: true});
+		this.renderer.setSize( window.innerWidth, window.innerHeight );
+		this.renderer.setClearColor( 0xaee7e4 );
+		document.body.appendChild( this.renderer.domElement );
+		
+		// Setup Three Js scene
+		this.scene = new THREE.Scene();
+    this.scene.fog = new THREE.FogExp2( 0xaee7e4, 0.0008 );
     
-    var canvas = document.createElement('canvas');
-		var context = canvas.getContext('2d');
-    canvas.width = window.innerWidth*window.devicePixelRatio;
-    canvas.height = window.innerHeight*window.devicePixelRatio;
+    // Setup Three JS camera
+		this.camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 1, 10000 );
+		this.camera.position.set(0, 40*this.scale, 40*this.scale );
+		this.camera.lookAt(new THREE.Vector3(0,0,0));
+    this.scene.add(this.camera);
     
-    for(var l = 0; l < this.map.color.length; l++){
+    // Setup Three JS Lights
+    this.setupLights();
+    
+    // Setup Faces
+    this.setupFaces();
+
+    // Build world
+		this.Build(data);
+		
+		// Set Resize
+		var self = this;
+    window.addEventListener( 'resize', function(){
+      self.resize();
+    }, false );
+		
+		this.render();
+		
+    //this.animate();
+    
+  });
+  
+  Render.prototype.setupLights = (function(){
+    
+    var hemiLight = new THREE.HemisphereLight( 0xaee7e4, 0x222222, 0.9);
+    this.scene.add(hemiLight); 
+    
+    function setLight(x,y,z){
+      var light = new THREE.DirectionalLight(0xFFFFFF, 0.3);
+		  light.position.set(x,y,z);
+		  light.lookAt(new THREE.Vector3(0,0,0));
+      return light;
+    }
+    
+    this.scene.add(setLight(0,10*this.scale,0));
+    this.scene.add(setLight(0,-10*this.scale,0));
+    this.scene.add(setLight(-10*this.scale,0,0));
+    this.scene.add(setLight(10*this.scale,0,0));
+  
+  });
+  
+  Render.prototype.setupFaces = (function(){
+    
+    var matrix = this.matrix;
+    
+    function createFace(w, h, rx, ry, tx, ty, tz){
+      var Geometry =  new THREE.PlaneGeometry( w, h );
+      Geometry.applyMatrix( matrix.makeRotationX( rx ) );
+      Geometry.applyMatrix( matrix.makeRotationY( ry ) );
+      Geometry.applyMatrix( matrix.makeTranslation( tx, ty, tz ) );
+      return Geometry;
+    }
+    
+    this.nGeometry = createFace( this.scale, this.scale, 0, Math.PI, 0, 0, -this.scale/2 );
+    this.sGeometry = createFace( this.scale, this.scale, 0, 0, 0, 0, this.scale/2 );
+    this.eGeometry = createFace( this.scale, this.scale, 0, Math.PI/2, this.scale/2, 0, 0 );
+    this.wGeometry = createFace( this.scale, this.scale, 0, -Math.PI/2, -this.scale/2, 0, 0 );
+    this.tGeometry = createFace( this.scale, this.scale, -Math.PI/2, 0, 0, this.scale/2, 0 );
+    this.t2Geometry = createFace( this.scale, this.scale, -Math.PI/2, Math.PI/2, 0, this.scale/2, 0 );
+    this.bGeometry = createFace( this.scale, this.scale, Math.PI/2, 0, 0, -this.scale/2, 0 );
+    
+  });
+  
+  Render.prototype.Build = (function(data){
+    
+    var map = data;
+		var width = parseInt(map[0].length/2);
+		var depth = parseInt(map.length/2);
+    
+    // World
+    var world = new THREE.Group();
+    
+    // Map
+    
+    for(var i = 0; i < this.range; i++){
       
-      var block = this.generateBlock(l);
+      var Geometry =  new THREE.Geometry(); 
       
-      if(l  == this.map.waterLevel){
-        context.fillStyle = "rgba(48, 65, 107, 0.8);";
-        context.beginPath();
-        context.rect(0,0,canvas.width,canvas.height);
-        context.fill();
-      }
-      
-      for(var y in this.data){
-        for(var x in this.data[y]){
-          if(this.data[y][x] == l || (this.data[y][x]-l) > 0 &&  (this.data[y][x]-l) <= 3) {
-          //if(this.data[y][x] >= l) {
-            this.placeBlock(context, y, x, l, block);
+      for(var y = 0; y < depth; y++){
+        for(var x = 0; x < width; x++){
+          
+          var cubeGeometry = new THREE.Geometry();
+          
+          var n = (map[y-1] != undefined) ? map[y-1][x] : this.range;
+          var ne = (map[y-1] != undefined && map[y-1][x+1] != undefined && x != (width-1)) ? map[y-1][x+1] : this.range;
+          var e = (map[y][x+1] != undefined && x != (width-1)) ? map[y][x+1] : this.range;
+          var se = (map[y+1] != undefined && map[y+1][x+1] != undefined && y != (depth-1)) ? map[y+1][x+1] : this.range;
+          var s = (map[y+1] != undefined && y != (depth-1)) ? map[y+1][x] : this.range;
+          var sw = (map[y+1] != undefined && map[y+1][x-1] != undefined)? map[y+1][x-1] : this.range;
+          var w = (map[y][x-1] != undefined) ? map[y][x-1] : this.range;
+          var nw = (map[y-1] != undefined && map[y-1][x-1] != undefined ) ? map[y-1][x-1] : this.range;
+          
+          var a = n > i || w > i || nw > i ? 0 : 1;
+          var b = n > i || e > i || ne > i ? 0 : 1;
+          var c = s > i || e > i || se > i ? 0 : 1;
+          var d = s > i || w > i || sw > i ? 0 : 1;
+          
+          // Top
+          
+          if(map[y][x] == i) {
+            
+            if ( 
+              a + c < d + b && (a+b+c+d) < 2
+              || (a+b+c) == 3 && d == 0
+              || (a+d+c) == 3 && b == 0
+            ) {
+            
+              var colors = this.t2Geometry.faces[ 0 ].vertexColors;
+							colors[ 0 ] = d === 0 ? this.shadow : this.light;
+							colors[ 1 ] = c === 0 ? this.shadow : this.light;
+							colors[ 2 ] = a === 0 ? this.shadow : this.light;
+              
+              var colors = this.t2Geometry.faces[ 1 ].vertexColors;
+							colors[ 0 ] = c === 0 ? this.shadow : this.light;
+							colors[ 1 ] = b === 0 ? this.shadow : this.light;
+							colors[ 2 ] = a === 0 ? this.shadow : this.light;
+              
+              cubeGeometry.merge( this.t2Geometry, this.matrix);
+              
+            } else {
+            
+              var colors = this.tGeometry.faces[ 0 ].vertexColors;
+							colors[ 0 ] = a === 0 ? this.shadow : this.light;
+							colors[ 1 ] = d === 0 ? this.shadow : this.light;
+							colors[ 2 ] = b === 0 ? this.shadow : this.light;
+              
+              var colors = this.tGeometry.faces[ 1 ].vertexColors;
+							colors[ 0 ] = d === 0 ? this.shadow : this.light;
+							colors[ 1 ] = c === 0 ? this.shadow : this.light;
+							colors[ 2 ] = b === 0 ? this.shadow : this.light;
+              
+              cubeGeometry.merge( this.tGeometry, this.matrix);
+            }
+            
           }
+          
+          if(map[y][x] >= i ){
+            
+            // Back
+            
+            if( map[y-1] != undefined && map[y-1][x] < i ) {
+              
+              var colors = this.nGeometry.faces[ 0 ].vertexColors;
+							colors[ 0 ] = ne >= i ? this.shadow : this.light;
+							colors[ 1 ] = n == i-1 || ne == i-1 || ne == this.range ? this.shadow : this.light;
+							colors[ 2 ] = nw >= i ? this.shadow : this.light;
+              
+              var colors = this.nGeometry.faces[ 1 ].vertexColors;
+							colors[ 0 ] = n == i-1 || ne == i-1 || ne == this.range ? this.shadow : this.light;
+							colors[ 1 ] = n == i-1 || nw == i-1 || nw == this.range ? this.shadow : this.light;
+							colors[ 2 ] = nw >= i ? this.shadow : this.light;
+							
+              cubeGeometry.merge( this.nGeometry, this.matrix);
+            }
+            
+            // Front
+            
+            if( map[y+1] != undefined && map[y+1][x] < i ) {
+              
+              var colors = this.sGeometry.faces[ 0 ].vertexColors;
+							colors[ 0 ] = sw >= i ? this.shadow : this.light;
+							colors[ 1 ] = s == i-1 || sw == i-1 || sw == this.range ? this.shadow : this.light;
+							colors[ 2 ] = se >= i ? this.shadow : this.light;
+              
+              var colors = this.sGeometry.faces[ 1 ].vertexColors;
+							colors[ 0 ] = s == i-1 || sw == i-1 || sw == this.range ? this.shadow : this.light;
+							colors[ 1 ] = s == i-1 || se == i-1 || se == this.range ? this.shadow : this.light;
+							colors[ 2 ] = se >= i ? this.shadow : this.light;
+							
+              cubeGeometry.merge( this.sGeometry, this.matrix);
+            }
+            
+            // Right
+            
+            if( map[y][x+1] != undefined && map[y][x+1] < i ) {
+              
+              var colors = this.eGeometry.faces[ 0 ].vertexColors;
+							colors[ 0 ] = se >= i ? this.shadow : this.light;
+							colors[ 1 ] = e == i-1 || se == i-1 || se == this.range? this.shadow : this.light;
+							colors[ 2 ] = ne >= i ? this.shadow : this.light;
+              
+              var colors = this.eGeometry.faces[ 1 ].vertexColors;
+							colors[ 0 ] = e == i-1 || se == i-1 || se == this.range ? this.shadow : this.light;
+							colors[ 1 ] = e == i-1 || ne == i-1 || ne == this.range ? this.shadow : this.light;
+							colors[ 2 ] = ne >= i ? this.shadow : this.light;
+              
+              cubeGeometry.merge( this.eGeometry, this.matrix);
+            }
+            
+            // Left
+            
+            if( map[y][x-1] != undefined && map[y][x-1] < i ) {
+              
+              var colors = this.wGeometry.faces[ 0 ].vertexColors;
+							colors[ 0 ] = nw >= i ? this.shadow : this.light;
+							colors[ 1 ] = w == i-1 || nw == i-1 || nw == this.range? this.shadow : this.light;
+							colors[ 2 ] = sw >= i ? this.shadow : this.light;
+              
+              var colors = this.wGeometry.faces[ 1 ].vertexColors;
+							colors[ 0 ] = w == i-1 || nw == i-1 || nw == this.range ? this.shadow : this.light;
+							colors[ 1 ] = w == i-1 || sw == i-1 || sw == this.range ? this.shadow : this.light;
+							colors[ 2 ] = sw >= i ? this.shadow : this.light;
+        
+              cubeGeometry.merge( this.wGeometry, this.matrix);
+            }
+            
+          }
+        
+          // Bottom
+        
+          if(i == 0) {
+            
+            // cubeGeometry.merge( this.bGeometry, this.matrix);
+            
+          }
+          
+          var cube =  new THREE.Mesh(cubeGeometry);
+          cube.position.set((x-(width/2))*this.scale, i*this.scale, (y-(depth/2))*this.scale); 
+          cube.updateMatrix();
+        
+          Geometry.merge( cube.geometry, cube.matrix );
         }
       }
+      
+      Geometry.mergeVertices();
+      var Material = new THREE.MeshLambertMaterial({ color: this.color[i], ambient: 0x444444, vertexColors: THREE.VertexColors });
+      /*material = new THREE.MeshBasicMaterial({
+        wireframe: true,
+        color: 'blue'
+      })*/
+      var layer = new THREE.Mesh( Geometry, Material);
+      
+      world.add(layer);
+      
     }
     
-    this.canvas.context.drawImage(canvas,0,0, canvas.width/window.devicePixelRatio,  canvas.height/window.devicePixelRatio);
+    this.scene.add(world);
+    
+    
+    // Water
+    var material = new THREE.MeshLambertMaterial({ color: 0x30416B, ambient: 0x444444, transparent: true });
+    material.opacity = 0.8;
+    var water = new THREE.Mesh(new THREE.PlaneBufferGeometry(width*this.scale, depth*this.scale), material );
+    water.rotation.x = -90 * Math.PI / 180;
+    water.position.y = this.scale*6.7;
+    water.position.x = -this.scale/2;
+    water.position.z = -this.scale/2;
+    this.scene.add(water);
+      
+  });
+  
+  Render.prototype.resize = (function(){
+    
+		this.camera.aspect = window.innerWidth / window.innerHeight;
+		this.camera.updateProjectionMatrix();
+		this.renderer.setSize( window.innerWidth, window.innerHeight );
+		this.render();
     
   });
   
-  
-  Render.prototype.generateBlock = (function(z){
-    
-    var grid = this.map.grid*window.devicePixelRatio;
-    var canvas = document.createElement('canvas');
-		var context = canvas.getContext('2d');
+  Render.prototype.render = (function(){
 		
-    canvas.width = grid*window.devicePixelRatio;
-    canvas.height =(grid*1.5)*window.devicePixelRatio;
-    
-    if(z == this.map.waterLevel){
-      this.drawHalfBlock(context, (grid/2), 0, z);
-    } else {
-      this.drawFullBlock(context, (grid/2), 0, z);
-    }
-    return canvas;
-    
-  }); 
-   
-  Render.prototype.drawFullBlock = (function(context, y, x, z){ 
-    
-    var grid = this.map.grid*window.devicePixelRatio;
-    
-    // draw top
-    context.fillStyle = this.map.color[z];
-    context.strokeStyle = this.map.color[z];
-    context.beginPath();
-    context.moveTo(x + grid/2, y - grid/2);
-    context.lineTo(x + grid, y);
-    context.lineTo(x + grid/2, y + grid/2);
-    context.lineTo(x, y);
-    context.lineTo(x + grid/2, y - grid/2);
-    context.closePath();
-    context.fill();
-    context.stroke();
-    
-    // draw left
-    context.fillStyle = this.shadeColor(this.map.color[z], -0.2);
-    context.strokeStyle = this.shadeColor(this.map.color[z], -0.3);
-    context.beginPath();
-    context.moveTo(x, y);
-    context.lineTo(x + grid/2, y + grid/2);
-    context.lineTo(x + grid/2, y + grid);
-    context.lineTo(x, y + grid/2);
-    context.lineTo(x, y);
-    context.closePath();
-    context.fill();
-    context.stroke();
-    
-    // draw right
-    context.fillStyle = this.shadeColor(this.map.color[z], -0.4);
-    context.strokeStyle = this.shadeColor(this.map.color[z], -0.5);
-    context.beginPath();
-    context.moveTo(x + grid/2, y + grid/2);
-    context.lineTo(x + grid/2, y + grid);
-    context.lineTo(x + grid, y + grid/2);
-    context.lineTo(x + grid, y);
-    context.lineTo(x + grid/2, y + grid/2);
-    context.closePath();
-    context.fill();
-    context.stroke();
-    
-  });
-   
-  Render.prototype.drawHalfBlock = (function(context, y, x, z){ 
-    
-    var grid = this.map.grid*window.devicePixelRatio;
-    
-    // draw top
-    context.fillStyle = this.map.color[z];
-    context.strokeStyle = this.map.color[z];
-    context.beginPath();
-    context.moveTo(x + grid/2, y - grid/2);
-    context.lineTo(x + grid, y);
-    context.lineTo(x + grid/2, y + grid/2);
-    context.lineTo(x, y);
-    context.lineTo(x + grid/2, y - grid/2);
-    context.closePath();
-    context.fill();
-    context.stroke();
-    
-    // draw left top
-    context.fillStyle = this.shadeColor(this.map.color[z], -0.2);
-    context.strokeStyle = this.shadeColor(this.map.color[z], -0.35);
-    context.beginPath();
-    context.moveTo(x, y);
-    context.lineTo(x + grid/2, y + grid/2);
-    context.lineTo(x + grid/2, y + grid*0.75);
-    context.lineTo(x, y + grid*0.25);
-    context.lineTo(x, y);
-    context.closePath();
-    context.fill();
-    context.stroke();
-    
-    // draw left bottom
-    context.fillStyle = this.shadeColor(this.map.color[z-1], -0.35);
-    context.strokeStyle = this.shadeColor(this.map.color[z-1], -0.40);
-    context.beginPath();
-    context.moveTo(x, y + grid*0.25);
-    context.lineTo(x + grid/2, y + grid*0.75);
-    context.lineTo(x + grid/2, y + grid);
-    context.lineTo(x, y + grid*0.5);
-    context.lineTo(x, y + grid*0.25);
-    context.fill();
-    context.stroke();
-    
-    // draw right
-    context.fillStyle = this.shadeColor(this.map.color[z], -0.4);
-    context.strokeStyle = this.shadeColor(this.map.color[z], -0.45);
-    context.beginPath();
-    context.moveTo(x + grid/2, y + grid/2);
-    context.lineTo(x + grid/2, y + grid*0.75);
-    context.lineTo(x + grid, y + grid*0.25);
-    context.lineTo(x + grid, y);
-    context.lineTo(x + grid/2, y + grid/2);
-    context.closePath();
-    context.fill();
-    context.stroke();
-    
-    // draw right bottom
-    context.fillStyle = this.shadeColor(this.map.color[z-1], -0.5);
-    context.strokeStyle = this.shadeColor(this.map.color[z-1], -0.55);
-    context.beginPath();
-    context.moveTo(x + grid, y + grid*0.25);
-    context.lineTo(x + grid/2, y + grid*0.75);
-    context.lineTo(x + grid/2, y + grid);
-    context.lineTo(x + grid, y + grid*0.5);
-    context.lineTo(x + grid, y + grid*0.25);
-    context.closePath();
-    context.fill();
-    context.stroke();
+		this.renderer.render( this.scene, this.camera );
     
   });
   
-  Render.prototype.placeBlock = (function(context, y, x, l, block){
+  Render.prototype.animate = (function(){
     
-    var grid = this.map.grid*window.devicePixelRatio;
-    
-    x = grid*x+((y % 2)*(grid/2));
-    y = grid*(y/2)-(l*(grid/2))+(0*grid);
-    
-    x = x-(grid/2);
-    y = y-(grid/2);
-    
-    context.drawImage(block, x, y);
+    var self = this;
+    requestAnimationFrame( function(){
+      return self.animate 
+    });       
+    this.render();
     
   });
   
-  Render.prototype.shadeColor = (function(color, percent) {   
-    
-    var f=parseInt(color.slice(1),16),t=percent<0?0:255,p=percent<0?percent*-1:percent,R=f>>16,G=f>>8&0x00FF,B=f&0x0000FF;
-    return "#"+(0x1000000+(Math.round((t-R)*p)+R)*0x10000+(Math.round((t-G)*p)+G)*0x100+(Math.round((t-B)*p)+B)).toString(16).slice(1);
-    
-  });
-
+  
   window.Render = Render;
   
 })();
