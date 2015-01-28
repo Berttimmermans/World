@@ -9,8 +9,8 @@
     this.map = {
       "grid": 20,
       "seed" : {
-        "width": 10,
-        "height": 10
+        "width": 20,
+        "height": 20
       },
       "loops" : 4,
       "smoothLoops" : 1,
@@ -27,11 +27,23 @@
     
     // Generate map data
     this.data = this.generator.New();
-    
     //console.log(JSON.stringify(this.data));
     
     // Draw map
-    this.render.Init(this.data); 
+    this.render.init(this.data); 
+    
+    this.render.render();
+    //this.animate();
+    
+  });
+  
+  Instance.prototype.animate = (function(){
+    
+    var self = this;
+    requestAnimationFrame( function(){
+      return self.animate 
+    });       
+    this.render.render();
     
   });
   

@@ -12,7 +12,7 @@
     
   }
   
-  Render.prototype.Init = (function(data){
+  Render.prototype.init = (function(data){
     
     // Setup Three Js renderer
     this.renderer = new THREE.WebGLRenderer({ antialias: true});
@@ -26,7 +26,7 @@
     
     // Setup Three JS camera
 		this.camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 1, 10000 );
-		this.camera.position.set(0, 40*this.scale, 40*this.scale );
+		this.camera.position.set(0, 50*this.scale, 50*this.scale );
 		this.camera.lookAt(new THREE.Vector3(0,0,0));
     this.scene.add(this.camera);
     
@@ -37,17 +37,13 @@
     this.setupFaces();
 
     // Build world
-		this.Build(data);
+		this.build(data);
 		
 		// Set Resize
 		var self = this;
     window.addEventListener( 'resize', function(){
       self.resize();
     }, false );
-		
-		this.render();
-		
-    //this.animate();
     
   });
   
@@ -82,26 +78,23 @@
       return Geometry;
     }
     
-    this.nGeometry = createFace( this.scale, this.scale, 0, Math.PI, 0, 0, -this.scale/2 );
-    this.sGeometry = createFace( this.scale, this.scale, 0, 0, 0, 0, this.scale/2 );
-    this.eGeometry = createFace( this.scale, this.scale, 0, Math.PI/2, this.scale/2, 0, 0 );
-    this.wGeometry = createFace( this.scale, this.scale, 0, -Math.PI/2, -this.scale/2, 0, 0 );
+    this.bGeometry = createFace( this.scale, this.scale, 0, Math.PI, 0, 0, -this.scale/2 );
+    this.fGeometry = createFace( this.scale, this.scale, 0, 0, 0, 0, this.scale/2 );
+    this.rGeometry = createFace( this.scale, this.scale, 0, Math.PI/2, this.scale/2, 0, 0 );
+    this.lGeometry = createFace( this.scale, this.scale, 0, -Math.PI/2, -this.scale/2, 0, 0 );
     this.tGeometry = createFace( this.scale, this.scale, -Math.PI/2, 0, 0, this.scale/2, 0 );
     this.t2Geometry = createFace( this.scale, this.scale, -Math.PI/2, Math.PI/2, 0, this.scale/2, 0 );
     this.bGeometry = createFace( this.scale, this.scale, Math.PI/2, 0, 0, -this.scale/2, 0 );
     
   });
   
-  Render.prototype.Build = (function(data){
+  Render.prototype.build = (function(data){
     
     var map = data;
-		var width = parseInt(map[0].length/2);
-		var depth = parseInt(map.length/2);
+		var width = parseInt(map[0].length/3);
+		var depth = parseInt(map.length/3);
     
-    // World
     var world = new THREE.Group();
-    
-    // Map
     
     for(var i = 0; i < this.range; i++){
       
@@ -121,14 +114,14 @@
           var w = (map[y][x-1] != undefined) ? map[y][x-1] : this.range;
           var nw = (map[y-1] != undefined && map[y-1][x-1] != undefined ) ? map[y-1][x-1] : this.range;
           
-          var a = n > i || w > i || nw > i ? 0 : 1;
-          var b = n > i || e > i || ne > i ? 0 : 1;
-          var c = s > i || e > i || se > i ? 0 : 1;
-          var d = s > i || w > i || sw > i ? 0 : 1;
-          
           // Top
           
           if(map[y][x] == i) {
+          
+            var a = n > i || w > i || nw > i ? 0 : 1;
+            var b = n > i || e > i || ne > i ? 0 : 1;
+            var c = s > i || e > i || se > i ? 0 : 1;
+            var d = s > i || w > i || sw > i ? 0 : 1;
             
             if ( 
               a + c < d + b && (a+b+c+d) < 2
@@ -165,74 +158,76 @@
             
           }
           
+          // Sides
+          
           if(map[y][x] >= i ){
             
             // Back
             
             if( map[y-1] != undefined && map[y-1][x] < i ) {
               
-              var colors = this.nGeometry.faces[ 0 ].vertexColors;
+              var colors = this.bGeometry.faces[ 0 ].vertexColors;
 							colors[ 0 ] = ne >= i ? this.shadow : this.light;
 							colors[ 1 ] = n == i-1 || ne == i-1 || ne == this.range ? this.shadow : this.light;
 							colors[ 2 ] = nw >= i ? this.shadow : this.light;
               
-              var colors = this.nGeometry.faces[ 1 ].vertexColors;
+              var colors = this.bGeometry.faces[ 1 ].vertexColors;
 							colors[ 0 ] = n == i-1 || ne == i-1 || ne == this.range ? this.shadow : this.light;
 							colors[ 1 ] = n == i-1 || nw == i-1 || nw == this.range ? this.shadow : this.light;
 							colors[ 2 ] = nw >= i ? this.shadow : this.light;
 							
-              cubeGeometry.merge( this.nGeometry, this.matrix);
+              cubeGeometry.merge( this.bGeometry, this.matrix);
             }
             
             // Front
             
             if( map[y+1] != undefined && map[y+1][x] < i ) {
               
-              var colors = this.sGeometry.faces[ 0 ].vertexColors;
+              var colors = this.fGeometry.faces[ 0 ].vertexColors;
 							colors[ 0 ] = sw >= i ? this.shadow : this.light;
 							colors[ 1 ] = s == i-1 || sw == i-1 || sw == this.range ? this.shadow : this.light;
 							colors[ 2 ] = se >= i ? this.shadow : this.light;
               
-              var colors = this.sGeometry.faces[ 1 ].vertexColors;
+              var colors = this.fGeometry.faces[ 1 ].vertexColors;
 							colors[ 0 ] = s == i-1 || sw == i-1 || sw == this.range ? this.shadow : this.light;
 							colors[ 1 ] = s == i-1 || se == i-1 || se == this.range ? this.shadow : this.light;
 							colors[ 2 ] = se >= i ? this.shadow : this.light;
 							
-              cubeGeometry.merge( this.sGeometry, this.matrix);
+              cubeGeometry.merge( this.fGeometry, this.matrix);
             }
             
             // Right
             
             if( map[y][x+1] != undefined && map[y][x+1] < i ) {
               
-              var colors = this.eGeometry.faces[ 0 ].vertexColors;
+              var colors = this.rGeometry.faces[ 0 ].vertexColors;
 							colors[ 0 ] = se >= i ? this.shadow : this.light;
 							colors[ 1 ] = e == i-1 || se == i-1 || se == this.range? this.shadow : this.light;
 							colors[ 2 ] = ne >= i ? this.shadow : this.light;
               
-              var colors = this.eGeometry.faces[ 1 ].vertexColors;
+              var colors = this.rGeometry.faces[ 1 ].vertexColors;
 							colors[ 0 ] = e == i-1 || se == i-1 || se == this.range ? this.shadow : this.light;
 							colors[ 1 ] = e == i-1 || ne == i-1 || ne == this.range ? this.shadow : this.light;
 							colors[ 2 ] = ne >= i ? this.shadow : this.light;
               
-              cubeGeometry.merge( this.eGeometry, this.matrix);
+              cubeGeometry.merge( this.rGeometry, this.matrix);
             }
             
             // Left
             
             if( map[y][x-1] != undefined && map[y][x-1] < i ) {
               
-              var colors = this.wGeometry.faces[ 0 ].vertexColors;
+              var colors = this.lGeometry.faces[ 0 ].vertexColors;
 							colors[ 0 ] = nw >= i ? this.shadow : this.light;
 							colors[ 1 ] = w == i-1 || nw == i-1 || nw == this.range? this.shadow : this.light;
 							colors[ 2 ] = sw >= i ? this.shadow : this.light;
               
-              var colors = this.wGeometry.faces[ 1 ].vertexColors;
+              var colors = this.lGeometry.faces[ 1 ].vertexColors;
 							colors[ 0 ] = w == i-1 || nw == i-1 || nw == this.range ? this.shadow : this.light;
 							colors[ 1 ] = w == i-1 || sw == i-1 || sw == this.range ? this.shadow : this.light;
 							colors[ 2 ] = sw >= i ? this.shadow : this.light;
         
-              cubeGeometry.merge( this.wGeometry, this.matrix);
+              cubeGeometry.merge( this.lGeometry, this.matrix);
             }
             
           }
@@ -255,29 +250,29 @@
       
       Geometry.mergeVertices();
       var Material = new THREE.MeshLambertMaterial({ color: this.color[i], ambient: 0x444444, vertexColors: THREE.VertexColors });
-      /*material = new THREE.MeshBasicMaterial({
-        wireframe: true,
-        color: 'blue'
-      })*/
+      //var Material = new THREE.MeshBasicMaterial({ wireframe: true, color: 'blue' });
       var layer = new THREE.Mesh( Geometry, Material);
       
       world.add(layer);
       
     }
     
+    world.add(this.addWater(width, depth));
+    
     this.scene.add(world);
+      
+  });
+  
+  Render.prototype.addWater = (function(width, depth){
     
-    
-    // Water
     var material = new THREE.MeshLambertMaterial({ color: 0x30416B, ambient: 0x444444, transparent: true });
     material.opacity = 0.8;
+    
     var water = new THREE.Mesh(new THREE.PlaneBufferGeometry(width*this.scale, depth*this.scale), material );
     water.rotation.x = -90 * Math.PI / 180;
-    water.position.y = this.scale*6.7;
-    water.position.x = -this.scale/2;
-    water.position.z = -this.scale/2;
-    this.scene.add(water);
-      
+    water.position.set(-this.scale/2, this.scale*6.7, -this.scale/2);
+    return water;
+    
   });
   
   Render.prototype.resize = (function(){
@@ -294,17 +289,6 @@
 		this.renderer.render( this.scene, this.camera );
     
   });
-  
-  Render.prototype.animate = (function(){
-    
-    var self = this;
-    requestAnimationFrame( function(){
-      return self.animate 
-    });       
-    this.render();
-    
-  });
-  
   
   window.Render = Render;
   
