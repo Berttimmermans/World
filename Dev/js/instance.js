@@ -7,8 +7,8 @@
     
     // Map 
     this.map = {
-      "grid": 20,
-      "size": 0.75,
+      //"grid": 20,
+      "size": 0.25,
       "seed" : {
         "width": 20,
         "height": 20
@@ -20,10 +20,12 @@
     };
     
     this.camera = {
-      "x" : 0,
-      "y" : 50,
-      "z" : 20
+      "x" : 0, "y" : 20, "z" : 20
     };
+    
+    this.speed = 0.2;
+    
+    this.touch = ('ontouchstart' in window) || (navigator.MaxTouchPoints > 0) || (navigator.msMaxTouchPoints > 0)? true : false;
     
   };
   
@@ -31,16 +33,18 @@
   
     this.generator = new Generator(this.map);
     this.render = new Render(this.map, this.camera);
+    this.controls = new Controls(this);
     
     // Generate map data
     this.data = this.generator.New();
     //console.log(JSON.stringify(this.data));
     
-    // Draw map
+    // Build map
     this.render.init(this.data); 
     
-    this.render.render();
-    //this.animate();
+    // Render map
+    //this.render.render(this.camera);
+    this.animate();
     
   });
   
@@ -48,9 +52,10 @@
     
     var self = this;
     requestAnimationFrame( function(){
-      return self.animate 
-    });       
-    this.render.render();
+      return self.animate();
+    });  
+    this.controls.validate();     
+    this.render.render(this.camera);
     
   });
   

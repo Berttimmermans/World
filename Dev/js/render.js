@@ -29,8 +29,6 @@
     
     // Setup Three JS camera
 		this.camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 1, 10000 );
-		this.camera.position.set(this.cameraData.x*this.scale, this.cameraData.y*this.scale, this.cameraData.z*this.scale );
-		this.camera.lookAt(new THREE.Vector3(0,0,0));
     this.scene.add(this.camera);
     
     // Setup Three JS Lights
@@ -287,10 +285,17 @@
     
   });
   
-  Render.prototype.render = (function(){
+  Render.prototype.render = (function(camera){
 		
+		this.updateCamera(camera);
 		this.renderer.render( this.scene, this.camera );
     
+  });
+  
+  Render.prototype.updateCamera = (function(camera){
+    
+		this.camera.position.set(camera.x*this.scale, camera.y*this.scale, camera.z*this.scale );
+  
   });
   
   window.Render = Render;
