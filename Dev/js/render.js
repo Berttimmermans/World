@@ -1,7 +1,8 @@
 (function(){
   
-  function Render(map){
+  function Render(map, camera){
     
+    this.size = map.size;
     this.color = map.color;
     this.range = this.color.length;
     this.scale = 5;
@@ -9,6 +10,8 @@
     this.light = new THREE.Color( 0xFFFFFF );
     this.shadow = new THREE.Color( 0xCCCCCC );
     this.matrix = new THREE.Matrix4();
+    
+    this.cameraData = camera;
     
   }
   
@@ -26,7 +29,7 @@
     
     // Setup Three JS camera
 		this.camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 1, 10000 );
-		this.camera.position.set(0, 50*this.scale, 50*this.scale );
+		this.camera.position.set(this.cameraData.x*this.scale, this.cameraData.y*this.scale, this.cameraData.z*this.scale );
 		this.camera.lookAt(new THREE.Vector3(0,0,0));
     this.scene.add(this.camera);
     
@@ -78,10 +81,10 @@
       return Geometry;
     }
     
-    this.bGeometry = createFace( this.scale, this.scale, 0, Math.PI, 0, 0, -this.scale/2 );
-    this.fGeometry = createFace( this.scale, this.scale, 0, 0, 0, 0, this.scale/2 );
-    this.rGeometry = createFace( this.scale, this.scale, 0, Math.PI/2, this.scale/2, 0, 0 );
-    this.lGeometry = createFace( this.scale, this.scale, 0, -Math.PI/2, -this.scale/2, 0, 0 );
+    this.nGeometry = createFace( this.scale, this.scale, 0, Math.PI, 0, 0, -this.scale/2 );
+    this.sGeometry = createFace( this.scale, this.scale, 0, 0, 0, 0, this.scale/2 );
+    this.eGeometry = createFace( this.scale, this.scale, 0, Math.PI/2, this.scale/2, 0, 0 );
+    this.wGeometry = createFace( this.scale, this.scale, 0, -Math.PI/2, -this.scale/2, 0, 0 );
     this.tGeometry = createFace( this.scale, this.scale, -Math.PI/2, 0, 0, this.scale/2, 0 );
     this.t2Geometry = createFace( this.scale, this.scale, -Math.PI/2, Math.PI/2, 0, this.scale/2, 0 );
     this.bGeometry = createFace( this.scale, this.scale, Math.PI/2, 0, 0, -this.scale/2, 0 );
@@ -91,8 +94,8 @@
   Render.prototype.build = (function(data){
     
     var map = data;
-		var width = parseInt(map[0].length/3);
-		var depth = parseInt(map.length/3);
+		var width = parseInt(map[0].length*this.size);
+		var depth = parseInt(map.length*this.size);
     
     var world = new THREE.Group();
     
@@ -166,68 +169,68 @@
             
             if( map[y-1] != undefined && map[y-1][x] < i ) {
               
-              var colors = this.bGeometry.faces[ 0 ].vertexColors;
+              var colors = this.nGeometry.faces[ 0 ].vertexColors;
 							colors[ 0 ] = ne >= i ? this.shadow : this.light;
 							colors[ 1 ] = n == i-1 || ne == i-1 || ne == this.range ? this.shadow : this.light;
 							colors[ 2 ] = nw >= i ? this.shadow : this.light;
               
-              var colors = this.bGeometry.faces[ 1 ].vertexColors;
+              var colors = this.nGeometry.faces[ 1 ].vertexColors;
 							colors[ 0 ] = n == i-1 || ne == i-1 || ne == this.range ? this.shadow : this.light;
 							colors[ 1 ] = n == i-1 || nw == i-1 || nw == this.range ? this.shadow : this.light;
 							colors[ 2 ] = nw >= i ? this.shadow : this.light;
 							
-              cubeGeometry.merge( this.bGeometry, this.matrix);
+              cubeGeometry.merge( this.nGeometry, this.matrix);
             }
             
             // Front
             
             if( map[y+1] != undefined && map[y+1][x] < i ) {
               
-              var colors = this.fGeometry.faces[ 0 ].vertexColors;
+              var colors = this.sGeometry.faces[ 0 ].vertexColors;
 							colors[ 0 ] = sw >= i ? this.shadow : this.light;
 							colors[ 1 ] = s == i-1 || sw == i-1 || sw == this.range ? this.shadow : this.light;
 							colors[ 2 ] = se >= i ? this.shadow : this.light;
               
-              var colors = this.fGeometry.faces[ 1 ].vertexColors;
+              var colors = this.sGeometry.faces[ 1 ].vertexColors;
 							colors[ 0 ] = s == i-1 || sw == i-1 || sw == this.range ? this.shadow : this.light;
 							colors[ 1 ] = s == i-1 || se == i-1 || se == this.range ? this.shadow : this.light;
 							colors[ 2 ] = se >= i ? this.shadow : this.light;
 							
-              cubeGeometry.merge( this.fGeometry, this.matrix);
+              cubeGeometry.merge( this.sGeometry, this.matrix);
             }
             
             // Right
             
             if( map[y][x+1] != undefined && map[y][x+1] < i ) {
               
-              var colors = this.rGeometry.faces[ 0 ].vertexColors;
+              var colors = this.eGeometry.faces[ 0 ].vertexColors;
 							colors[ 0 ] = se >= i ? this.shadow : this.light;
 							colors[ 1 ] = e == i-1 || se == i-1 || se == this.range? this.shadow : this.light;
 							colors[ 2 ] = ne >= i ? this.shadow : this.light;
               
-              var colors = this.rGeometry.faces[ 1 ].vertexColors;
+              var colors = this.eGeometry.faces[ 1 ].vertexColors;
 							colors[ 0 ] = e == i-1 || se == i-1 || se == this.range ? this.shadow : this.light;
 							colors[ 1 ] = e == i-1 || ne == i-1 || ne == this.range ? this.shadow : this.light;
 							colors[ 2 ] = ne >= i ? this.shadow : this.light;
               
-              cubeGeometry.merge( this.rGeometry, this.matrix);
+              cubeGeometry.merge( this.eGeometry, this.matrix);
             }
             
             // Left
             
             if( map[y][x-1] != undefined && map[y][x-1] < i ) {
               
-              var colors = this.lGeometry.faces[ 0 ].vertexColors;
+              var colors = this.wGeometry.faces[ 0 ].vertexColors;
 							colors[ 0 ] = nw >= i ? this.shadow : this.light;
 							colors[ 1 ] = w == i-1 || nw == i-1 || nw == this.range? this.shadow : this.light;
 							colors[ 2 ] = sw >= i ? this.shadow : this.light;
               
-              var colors = this.lGeometry.faces[ 1 ].vertexColors;
+              var colors = this.wGeometry.faces[ 1 ].vertexColors;
 							colors[ 0 ] = w == i-1 || nw == i-1 || nw == this.range ? this.shadow : this.light;
 							colors[ 1 ] = w == i-1 || sw == i-1 || sw == this.range ? this.shadow : this.light;
 							colors[ 2 ] = sw >= i ? this.shadow : this.light;
         
-              cubeGeometry.merge( this.lGeometry, this.matrix);
+              cubeGeometry.merge( this.wGeometry, this.matrix);
             }
             
           }
