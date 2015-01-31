@@ -21,7 +21,7 @@
     this.camera = this.instance.camera;
     this.events = events();
     this.input = (this.instance.touch)? new TouchControls(this) : new KeyboardControls(this);
-    this.input = new TouchControls(this);
+    //this.input = new TouchControls(this);
     this.input.init();
     
   }
@@ -37,7 +37,7 @@
     if(this.camera.ry < -Math.PI) this.camera.ry += Math.PI*2;
     if(this.camera.ry > Math.PI) this.camera.ry -= Math.PI*2;
     
-    //if(this.events.pan.y != 0) this.camera.rx -= (this.events.pan.y/1000);
+    if(this.events.pan.y != 0) this.camera.rx -= (this.events.pan.y/1000);
     if(this.camera.rx < -(Math.PI/2)) this.camera.rx = -(Math.PI/2);
     if(this.camera.rx > (Math.PI/2)) this.camera.rx = (Math.PI/2);
     

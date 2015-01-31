@@ -8,10 +8,10 @@
     // Map 
     this.map = {
       //"grid": 20,
-      "size": 0.3,
+      "size": 0.5,
       "seed" : {
-        "width": 20,
-        "height": 20
+        "width": 10,
+        "height": 10
       },
       "loops" : 4,
       "smoothLoops" : 1,

@@ -18,7 +18,7 @@
   Render.prototype.init = (function(data){
     
     // Setup Three Js renderer
-    this.renderer = new THREE.WebGLRenderer({ antialias: true});
+    this.renderer = new THREE.WebGLRenderer({ antialias: true });
 		this.renderer.setSize( window.innerWidth, window.innerHeight );
 		this.renderer.setClearColor( 0xaee7e4 );
 		document.body.appendChild( this.renderer.domElement );
@@ -29,6 +29,7 @@
     
     // Setup Three JS camera
 		this.camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 1, 10000 );
+		this.camera.eulerOrder = "YXZ";
     this.scene.add(this.camera);
     
     // Setup Three JS Lights
