@@ -41,8 +41,8 @@
         var touchX = e.changedTouches[0].pageX;
         var touchY = e.changedTouches[0].pageY;
     		
-        pan.y = (touch.y-touchY)*(window.innerHeight/70);
-        pan.x = (touch.x-touchX)*(window.innerWidth/70);
+        pan.y = (touch.y-touchY)*(window.innerHeight/50);
+        pan.x = (touch.x-touchX)*(window.innerWidth/50);
         
         touch.y = touchY;
         touch.x = touchX;
