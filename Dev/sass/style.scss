@@ -53,7 +53,9 @@ canvas{
   		font-weight: bold;
   		color: rgba(0,0,0, 0.1);
       -webkit-transition: -webkit-transform 0.15s ease-out;
+      transition: transform 0.15s ease-out;
   		-webkit-text-stroke: 1px rgba(0,0,0, 0.1);
+      text-stroke: 1px rgba(0,0,0, 0.1);
   		box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
   		border-radius: $size/2;
   	}
@@ -61,6 +63,7 @@ canvas{
 		&.active{
 		  div{
         -webkit-transition: -webkit-transform 0s ease-out;
+        transition: transform 0s ease-out;
   			background: rgba(255,255,255, 0.3);
   			color: rgba(0,0,0, 0.4);
       }
@@ -76,13 +79,14 @@ canvas{
     font-size: 30px;
     color: rgba(0,0,0, 0.1);
     -webkit-text-stroke: 1px rgba(0,0,0, 0.1);
+    text-stroke: 1px rgba(0,0,0, 0.1);
     
     &.active{
   		background: rgba(255,255,255, 0.3);
   		color: rgba(0,0,0, 0.4);
 		}
 		
-		&#js-action{
+		&.action{
 		  position: absolute;
 		  right: 60px; bottom: 60px;
   		width: 80px; height: 80px;

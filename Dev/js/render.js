@@ -29,7 +29,7 @@
     
     // Setup Three JS camera
 		this.camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 1, 10000 );
-		this.camera.eulerOrder = "YXZ";
+		this.camera.rotation.order = "YXZ";
     this.scene.add(this.camera);
     
     // Setup Three JS Lights

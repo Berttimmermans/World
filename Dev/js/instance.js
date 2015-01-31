@@ -7,12 +7,8 @@
     
     // Map 
     this.map = {
-      //"grid": 20,
       "size": 0.5,
-      "seed" : {
-        "width": 10,
-        "height": 10
-      },
+      "seed" : { "width": 10, "height": 10 },
       "loops" : 4,
       "smoothLoops" : 1,
       "waterLevel" : 7,
