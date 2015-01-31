@@ -21,7 +21,7 @@
     this.camera = this.instance.camera;
     this.events = events();
     this.input = (this.instance.touch)? new TouchControls(this) : new KeyboardControls(this);
-    //this.input = new TouchControls(this);
+    this.input = new TouchControls(this);
     this.input.init();
     
   }

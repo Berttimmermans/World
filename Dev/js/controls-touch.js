@@ -12,37 +12,45 @@
   
   TouchControls.prototype.init = (function(){
     
+		var controls = document.createElement("div");
+		controls.className = "controls";
+		document.body.appendChild(controls);
+    
     var pan = this.controls.events.pan;
     var touch = this.touch;
     
-    window.ontouchstart = function(e){
-    		
-      touch.y = e.pageY;
-      touch.x = e.pageX;
+    document.body.addEventListener("touchstart", function() {
+		  return event.preventDefault(); 
+    }, false);
+    
+    controls.addEventListener("touchstart", function(e) {	
+      touch.y = e.changedTouches[0].pageX;
+      touch.x =  e.changedTouches[0].pageY;
       touch.state = 'start';
-    		
-		}
-		
-		window.ontouchend = function(e){
-  		
+		  return event.preventDefault(); 
+    }, false);
+    
+    controls.addEventListener("touchend", function(e) {	
       touch.state = 'end';
-  		
-		}
-  		
-		window.ontouchmove = function(e){
-  		
+    }, false);
+    
+    controls.addEventListener("touchmove", function(e) {	
+      
+      console.log('test');
   		
   		if(touch.state == 'start'){
+      
+        var touchX = e.changedTouches[0].pageX;
+        var touchY = e.changedTouches[0].pageY;
     		
-        pan.y = (touch.y-e.pageY)*(window.innerHeight/100);
-        pan.x = (touch.x-e.pageX)*(window.innerWidth/100);
+        pan.y = (touch.y-touchY)*(window.innerHeight/100);
+        pan.x = (touch.x-touchX)*(window.innerWidth/100);
         
-        touch.y = e.pageY;
-        touch.x = e.pageX;
+        touch.y = touchY;
+        touch.x = touchX;
         
       }
-  		
-		}
+    }, false);
     
   });
   
