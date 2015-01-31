@@ -42,7 +42,11 @@
 		
 		// Set Resize
 		var self = this;
-    window.addEventListener( 'resize', function(){
+    window.addEventListener('resize', function(){
+      self.resize();
+    }, false );
+    
+    window.addEventListener('orientationchange', function(){
       self.resize();
     }, false );
     
@@ -296,6 +300,7 @@
     
 		this.camera.position.set(camera.x*this.scale, camera.y*this.scale, camera.z*this.scale );
 		this.camera.rotation.set(camera.rx, camera.ry, camera.rz );
+		this.camera.updateProjectionMatrix();
   
   });
   
