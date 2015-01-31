@@ -24,8 +24,8 @@
     }, false);
     
     controls.addEventListener("touchstart", function(e) {	
-      touch.y = e.originalEvent.touches[0].pageY;
-      touch.x = e.originalEvent.touches[0].pageX;
+      touch.y = e.changedTouches[0].pageY;
+      touch.x = e.changedTouches[0].pageX;
       touch.state = 'start';
 		  return event.preventDefault(); 
     }, false);
@@ -35,16 +35,14 @@
     }, false);
     
     controls.addEventListener("touchmove", function(e) {	
-      
-      console.log('test');
   		
   		if(touch.state == 'start'){
       
         var touchX = e.changedTouches[0].pageX;
         var touchY = e.changedTouches[0].pageY;
     		
-        pan.y = (touch.y-touchY)*(window.innerHeight/100);
-        pan.x = (touch.x-touchX)*(window.innerWidth/100);
+        pan.y = (touch.y-touchY)*(window.innerHeight/10);
+        pan.x = (touch.x-touchX)*(window.innerWidth/10);
         
         touch.y = touchY;
         touch.x = touchX;
