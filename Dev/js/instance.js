@@ -8,7 +8,7 @@
     // Map 
     this.map = {
       //"grid": 20,
-      "size": 0.25,
+      "size": 0.3,
       "seed" : {
         "width": 20,
         "height": 20
@@ -20,7 +20,8 @@
     };
     
     this.camera = {
-      "x" : 0, "y" : 20, "z" : 20
+      "x" : 0, "y" : 20, "z" : 20,
+      "rx" : 0, "ry" : 0, "rz" : 0
     };
     
     this.speed = 0.2;

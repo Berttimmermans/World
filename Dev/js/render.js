@@ -281,7 +281,7 @@
 		this.camera.aspect = window.innerWidth / window.innerHeight;
 		this.camera.updateProjectionMatrix();
 		this.renderer.setSize( window.innerWidth, window.innerHeight );
-		this.render();
+		this.render(this.cameraData);
     
   });
   
@@ -295,6 +295,7 @@
   Render.prototype.updateCamera = (function(camera){
     
 		this.camera.position.set(camera.x*this.scale, camera.y*this.scale, camera.z*this.scale );
+		this.camera.rotation.set(camera.rx, camera.ry, camera.rz );
   
   });
   
