@@ -24,8 +24,8 @@
     }, false);
     
     controls.addEventListener("touchstart", function(e) {	
-      touch.y = e.changedTouches[0].pageX;
-      touch.x =  e.changedTouches[0].pageY;
+      touch.y = e.originalEvent.touches[0].pageY;
+      touch.x = e.originalEvent.touches[0].pageX;
       touch.state = 'start';
 		  return event.preventDefault(); 
     }, false);
