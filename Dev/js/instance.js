@@ -7,8 +7,8 @@
     
     // Map 
     this.map = {
-      "size": 0.5,
-      "seed" : { "width": 10, "height": 10 },
+      "size": 0.6,
+      "seed" : { "width": 15, "height": 15 },
       "loops" : 4,
       "smoothLoops" : 1,
       "waterLevel" : 7,
@@ -16,11 +16,11 @@
     };
     
     this.camera = {
-      "x" : 0, "y" : 20, "z" : 20,
-      "rx" : 0, "ry" : 0, "rz" : 0
+      "x" : 0, "y" : 20, "z" : 0,
+      "rx" : 0, "ry" : -Math.PI*0.75, "rz" : 0
     };
     
-    this.speed = 0.2;
+    this.speed = 0.08;
     
     this.touch = ('ontouchstart' in window) || (navigator.MaxTouchPoints > 0) || (navigator.msMaxTouchPoints > 0)? true : false;
     
@@ -30,6 +30,7 @@
   
     this.generator = new Generator(this.map);
     this.render = new Render(this.map, this.camera);
+    this.collision = new Collision(this.map, this.speed);
     this.controls = new Controls(this);
     
     // Generate map data
@@ -38,6 +39,9 @@
     
     // Build map
     this.render.init(this.data); 
+    
+    // Build collision map
+    this.collision.init(this.data);
     
     // Render map
     //this.render.render(this.camera);

@@ -19,38 +19,10 @@
     this.instance = instance;
     this.speed = instance.speed;
     this.camera = this.instance.camera;
+    this.collision = this.instance.collision;
     this.events = events();
     this.input = (this.instance.touch)? new TouchControls(this) : new KeyboardControls(this);
     this.input.init();    
-    
-    console.log( '---- 0' );
-
-    console.log( 'Cos ' + Math.cos((90 * Math.PI) / 180) );
-    console.log( 'Sin ' + Math.sin((90 * Math.PI) / 180) );
-    
-
-    console.log( '---- 90' );
-
-    console.log( 'Cos ' + Math.cos((0 * Math.PI) / 180) );
-    console.log( 'Sin ' + Math.sin((0 * Math.PI) / 180) );
-    
-    
-    console.log( '---- 180' );
-    
-    console.log( 'Cos ' + Math.cos((-90 * Math.PI) / 180) );
-    console.log( 'Sin ' + Math.sin((-90 * Math.PI) / 180) );
-
-    
-    console.log( '---- 270' );
-
-    console.log( 'Cos ' + Math.cos((-180 * Math.PI) / 180) );
-    console.log( 'Sin ' + Math.sin((-180 * Math.PI) / 180) );
-    
-    console.log( '---- 359' );
-
-    console.log( 'Cos ' + Math.cos((-270 * Math.PI) / 180) );
-    console.log( 'Sin ' + Math.sin((-270 * Math.PI) / 180) );
-    
   }
   
   Controls.prototype.validate = (function(){
@@ -68,25 +40,34 @@
     this.events.pan.x = 0;
     this.events.pan.y = 0;
     
+    // Define angle
+    
     var angle = ((((this.camera.ry+Math.PI)/2)/Math.PI)*-360)+180;
     
     // Movement
     
+    var x, z;
+    
     if(this.events.down) {
-      this.camera.x += -1*(this.speed * Math.sin((-angle) * Math.PI / 180));
-      this.camera.z += -1*(this.speed * Math.cos((-angle) * Math.PI / 180));
+      x = this.camera.x + (-1*(this.speed * Math.sin((-angle) * Math.PI / 180)));
+      z = this.camera.z + (-1*(this.speed * Math.cos((-angle) * Math.PI / 180)));
     }
     if(this.events.up) {
-      this.camera.x += 1*(this.speed * Math.sin((-angle) * Math.PI / 180));
-      this.camera.z += 1*(this.speed * Math.cos((-angle) * Math.PI / 180));
+      x = this.camera.x + (1*(this.speed * Math.sin((-angle) * Math.PI / 180)));
+      z = this.camera.z + (1*(this.speed * Math.cos((-angle) * Math.PI / 180)));
     }
     if(this.events.right) {
-      this.camera.x += 1*(this.speed * Math.cos((angle) * Math.PI / 180));
-      this.camera.z += 1*(this.speed * Math.sin((angle) * Math.PI / 180));
+      x = this.camera.x + (1*(this.speed * Math.cos((angle) * Math.PI / 180)));
+      z = this.camera.z + (1*(this.speed * Math.sin((angle) * Math.PI / 180)));
     }
     if(this.events.left) {
-      this.camera.x += -1*(this.speed * Math.cos((angle) * Math.PI / 180));
-      this.camera.z += -1*(this.speed * Math.sin((angle) * Math.PI / 180));
+      x = this.camera.x + (-1*(this.speed * Math.cos((angle) * Math.PI / 180)));
+      z = this.camera.z + (-1*(this.speed * Math.sin((angle) * Math.PI / 180)));
+    }
+    if(this.events.down || this.events.up || this.events.left || this.events.right){
+      if(this.collision.validateX(x)) this.camera.x = x;
+      if(this.collision.validateZ(z)) this.camera.z = z;
+      this.camera.y = this.collision.setY(this.camera.x, this.camera.z);
     }
     
   });

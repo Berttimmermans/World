@@ -5,7 +5,7 @@
     this.size = map.size;
     this.color = map.color;
     this.range = this.color.length;
-    this.scale = 5;
+    this.scale = 1;
     
     this.light = new THREE.Color( 0xFFFFFF );
     this.shadow = new THREE.Color( 0xCCCCCC );
@@ -28,7 +28,7 @@
     this.scene.fog = new THREE.FogExp2( 0xaee7e4, 0.0008 );
     
     // Setup Three JS camera
-		this.camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 1, 10000 );
+		this.camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.05, 10000 );
 		this.camera.rotation.order = "YXZ";
     this.scene.add(this.camera);
     
@@ -247,7 +247,7 @@
           }
           
           var cube =  new THREE.Mesh(cubeGeometry);
-          cube.position.set((x-(width/2))*this.scale, i*this.scale, (y-(depth/2))*this.scale); 
+          cube.position.set(x*this.scale, i*this.scale, y*this.scale); 
           cube.updateMatrix();
         
           Geometry.merge( cube.geometry, cube.matrix );
@@ -276,7 +276,7 @@
     
     var water = new THREE.Mesh(new THREE.PlaneBufferGeometry(width*this.scale, depth*this.scale), material );
     water.rotation.x = -90 * Math.PI / 180;
-    water.position.set(-this.scale/2, this.scale*6.7, -this.scale/2);
+    water.position.set(((width*this.scale)/2)-0.5, this.scale*6.7, ((width*this.scale)/2)-0.5);
     return water;
     
   });

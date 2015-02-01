@@ -46,7 +46,7 @@
 		
 		window.onmousemove = function(e){
   		if(mouse.state == 'down'){
-        pan.y = (mouse.y-e.pageY)*(window.innerHeight/200);
+        pan.y = -(mouse.y-e.pageY)*(window.innerHeight/200);
         pan.x = (mouse.x-e.pageX)*(window.innerWidth/200);
         mouse.y = e.pageY;
         mouse.x = e.pageX;

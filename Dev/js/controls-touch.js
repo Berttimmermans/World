@@ -68,8 +68,8 @@
   		if(touch.state == 'start'){
         var touchX = e.changedTouches[0].pageX;
         var touchY = e.changedTouches[0].pageY;
-        pan.y = (touch.y-touchY)*(window.innerHeight/50);
-        pan.x = (touch.x-touchX)*(window.innerWidth/50);
+        pan.y = -(touch.y-touchY)*(window.innerHeight/50);
+        pan.x = -(touch.x-touchX)*(window.innerWidth/50);
         touch.y = touchY;
         touch.x = touchX;
       }
@@ -110,8 +110,8 @@
       
       if(x < -(size/8)) events.left = true;
       if(x > (size/8)) events.right = true;
-      if(y < -(size/8)) events.down = true;
-      if(y > (size/8)) events.up = true;
+      if(y < -(size/8)) events.up = true;
+      if(y > (size/8)) events.down = true;
       
 		  return e.stopPropagation(); 
 			 
