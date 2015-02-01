@@ -1,9 +1,10 @@
 (function(){
   
-  function Collision(map, speed){
+  function Collision(map, camera){
     
     this.size = map.size;
     this.range = map.color.length;
+    this.camera = camera;
     
   }
   
@@ -11,6 +12,7 @@
     
     this.data = data;
     this.render(this.data);
+    this.camera.y = this.setY(this.camera.x, this.camera.z);
     
   });
   

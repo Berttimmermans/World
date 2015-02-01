@@ -7,7 +7,7 @@
     
     // Map 
     this.map = {
-      "size": 0.6,
+      "size": 0.3,
       "seed" : { "width": 15, "height": 15 },
       "loops" : 4,
       "smoothLoops" : 1,
@@ -16,7 +16,7 @@
     };
     
     this.camera = {
-      "x" : 0, "y" : 20, "z" : 0,
+      "x" : 0, "y" : 0, "z" : 0,
       "rx" : 0, "ry" : -Math.PI*0.75, "rz" : 0
     };
     
@@ -29,8 +29,8 @@
   Instance.prototype.Init = (function (){
   
     this.generator = new Generator(this.map);
+    this.collision = new Collision(this.map, this.camera);
     this.render = new Render(this.map, this.camera);
-    this.collision = new Collision(this.map, this.speed);
     this.controls = new Controls(this);
     
     // Generate map data
