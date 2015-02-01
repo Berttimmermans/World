@@ -64,11 +64,16 @@
       x = this.camera.x + (-1*(this.speed * Math.cos((angle) * Math.PI / 180)));
       z = this.camera.z + (-1*(this.speed * Math.sin((angle) * Math.PI / 180)));
     }
+    
+    
     if(this.events.down || this.events.up || this.events.left || this.events.right){
       if(this.collision.validateX(x)) this.camera.x = x;
       if(this.collision.validateZ(z)) this.camera.z = z;
-      this.camera.y = this.collision.setY(this.camera.x, this.camera.z);
+      var y = this.collision.setY(this.camera.x, this.camera.z);
+      if(this.camera.y > y) this.camera.drop = this.camera.y-y;
+      this.camera.y = y;
     }
+    
     
   });
 

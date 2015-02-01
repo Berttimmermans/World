@@ -17,7 +17,8 @@
     
     this.camera = {
       "x" : 0, "y" : 0, "z" : 0,
-      "rx" : 0, "ry" : -Math.PI*0.75, "rz" : 0
+      "rx" : 0, "ry" : -Math.PI*0.75, "rz" : 0,
+      "drop" : 0
     };
     
     this.speed = 0.08;

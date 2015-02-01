@@ -299,7 +299,10 @@
   
   Render.prototype.updateCamera = (function(camera){
     
-		this.camera.position.set(camera.x*this.scale, camera.y*this.scale, camera.z*this.scale );
+      
+    if(camera.drop >= 0) camera.drop -= 0.1;
+    
+		this.camera.position.set(camera.x*this.scale, (camera.y+camera.drop)*this.scale, camera.z*this.scale );
 		this.camera.rotation.set(camera.rx, camera.ry, camera.rz );
 		this.camera.updateProjectionMatrix();
   

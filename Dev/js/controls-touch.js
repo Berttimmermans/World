@@ -110,8 +110,8 @@
       
       if(x < -(size/8)) events.left = true;
       if(x > (size/8)) events.right = true;
-      if(y < -(size/8)) events.up = true;
-      if(y > (size/8)) events.down = true;
+      if(y < -(size/8)) events.down = true;
+      if(y > (size/8)) events.up = true;
       
 		  return e.stopPropagation(); 
 			 
