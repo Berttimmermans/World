@@ -302,6 +302,7 @@
       
     if(camera.drop > 0) camera.drop -= 0.1;
     if(camera.jump > 0) camera.jump -= 0.1;
+    if(camera.jump < 0) camera.jump = 0;
     
     var y = camera.y+camera.drop+camera.height+camera.jump;
     

@@ -5,7 +5,7 @@
     this.size = map.size;
     this.range = map.color.length;
     this.camera = camera;
-    this.squareSize = 20;
+    this.squareSize = 5;
     
   }
   

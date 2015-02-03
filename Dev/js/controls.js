@@ -71,7 +71,9 @@
       z = this.camera.z + (-1*(this.speed * Math.sin((this.angle) * Math.PI / 180)));
     }
     
-    if(this.events.jump) this.camera.jump = 1.5;
+    if(this.events.jump && this.camera.jump == 0) {
+      this.camera.jump = 1.5;
+    }
     
     if(this.events.down || this.events.up || this.events.left || this.events.right) this.collision.validateOptions(x,z);
     

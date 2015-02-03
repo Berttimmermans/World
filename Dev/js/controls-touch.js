@@ -136,7 +136,7 @@
 		});
 		
 		action.addEventListener("touchend", function(){
-			events.jump = true;
+			events.jump = false;
 			action.classList.remove('active');
 		});
     
