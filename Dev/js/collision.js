@@ -5,6 +5,7 @@
     this.size = map.size;
     this.range = map.color.length;
     this.camera = camera;
+    this.squareSize = 20;
     
   }
   
@@ -12,7 +13,7 @@
     
     this.data = data;
     this.render(this.data);
-    this.camera.y = this.setY(this.camera.x, this.camera.z);
+    this.camera.y = this.getY(this.camera.x, this.camera.z);
     
   });
   
@@ -22,14 +23,12 @@
 		this.heightMap.className = "collision";
     this.heightMapContext = this.heightMap.getContext('2d');	
     
-    this.squareSize = 10;
-    
     this.heightMap.width = parseInt(this.data[0].length*this.size)*this.squareSize;
     this.heightMap.height = parseInt(this.data.length*this.size)*this.squareSize;
     
     for(var y in this.data){
       for(var x in this.data[y]){
-        var color = this.data[y][x];
+        var color = this.data[y][x]*10;
         this.heightMapContext.beginPath();
         this.heightMapContext.rect(this.squareSize*x, this.squareSize*y, this.squareSize, this.squareSize);
         this.heightMapContext.fillStyle = 'rgba('+color+','+color+','+color+',1)';
@@ -38,7 +37,42 @@
       }
     }
     
-		//document.body.appendChild(this.heightMap);
+		//document.body.appendChild(this.heightMap);  
+    
+  });
+  
+  Collision.prototype.getY = (function(x, z){
+  
+    x = parseInt(x*this.squareSize);
+    z = parseInt(z*this.squareSize);
+    var data = this.heightMapContext.getImageData(x, z, 1, 1).data;
+    return data[0]/10;
+  
+  });
+  
+  Collision.prototype.validateOptions = (function(x, z){
+    
+    if(this.validatePosition(x,z) || this.validatePosition(this.camera.x,z) || this.validatePosition(x,this.camera.z)){
+      return true;
+    }
+  
+  });
+  
+  Collision.prototype.validatePosition = (function(x,z){
+    
+    x = (this.validateX(x))? x : this.camera.x;
+    z = (this.validateZ(z))? z : this.camera.z;
+    var y = this.getY(x,z);
+    
+    if(this.validateY(y)){
+      this.camera.x = x;
+      this.camera.z = z;
+      if(this.camera.y > y) this.camera.drop = this.camera.y-y;
+      this.camera.y = y;
+      return true;
+    } else {
+      return false;
+    }
     
   });
   
@@ -56,13 +90,10 @@
   
   });
   
-  Collision.prototype.setY = (function(x, z){
+  Collision.prototype.validateY = (function(y){
   
-    x = parseInt(x*10);
-    z = parseInt(z*10);
-    var data = this.heightMapContext.getImageData(x, z, 1, 1).data;
-    var y = data[0] + 2;
-    return y;
+    if(this.camera.y+this.camera.jump >= y) return true;
+    return false;
   
   });
   

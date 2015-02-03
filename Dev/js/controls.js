@@ -42,38 +42,38 @@
     
     // Define angle
     
-    var angle = ((((this.camera.ry+Math.PI)/2)/Math.PI)*-360)+180;
+    this.angle = ((((this.camera.ry+Math.PI)/2)/Math.PI)*-360)+180;
     
     // Movement
+    
+    this.move(); 
+    
+  });
+  
+  Controls.prototype.move = (function(){
     
     var x, z;
     
     if(this.events.down) {
-      x = this.camera.x + (-1*(this.speed * Math.sin((-angle) * Math.PI / 180)));
-      z = this.camera.z + (-1*(this.speed * Math.cos((-angle) * Math.PI / 180)));
+      x = this.camera.x + (-1*(this.speed * Math.sin((-this.angle) * Math.PI / 180)));
+      z = this.camera.z + (-1*(this.speed * Math.cos((-this.angle) * Math.PI / 180)));
     }
     if(this.events.up) {
-      x = this.camera.x + (1*(this.speed * Math.sin((-angle) * Math.PI / 180)));
-      z = this.camera.z + (1*(this.speed * Math.cos((-angle) * Math.PI / 180)));
+      x = this.camera.x + (1*(this.speed * Math.sin((-this.angle) * Math.PI / 180)));
+      z = this.camera.z + (1*(this.speed * Math.cos((-this.angle) * Math.PI / 180)));
     }
     if(this.events.right) {
-      x = this.camera.x + (1*(this.speed * Math.cos((angle) * Math.PI / 180)));
-      z = this.camera.z + (1*(this.speed * Math.sin((angle) * Math.PI / 180)));
+      x = this.camera.x + (1*(this.speed * Math.cos((this.angle) * Math.PI / 180)));
+      z = this.camera.z + (1*(this.speed * Math.sin((this.angle) * Math.PI / 180)));
     }
     if(this.events.left) {
-      x = this.camera.x + (-1*(this.speed * Math.cos((angle) * Math.PI / 180)));
-      z = this.camera.z + (-1*(this.speed * Math.sin((angle) * Math.PI / 180)));
+      x = this.camera.x + (-1*(this.speed * Math.cos((this.angle) * Math.PI / 180)));
+      z = this.camera.z + (-1*(this.speed * Math.sin((this.angle) * Math.PI / 180)));
     }
     
+    if(this.events.jump) this.camera.jump = 1.5;
     
-    if(this.events.down || this.events.up || this.events.left || this.events.right){
-      if(this.collision.validateX(x)) this.camera.x = x;
-      if(this.collision.validateZ(z)) this.camera.z = z;
-      var y = this.collision.setY(this.camera.x, this.camera.z);
-      if(this.camera.y > y) this.camera.drop = this.camera.y-y;
-      this.camera.y = y;
-    }
-    
+    if(this.events.down || this.events.up || this.events.left || this.events.right) this.collision.validateOptions(x,z);
     
   });
 

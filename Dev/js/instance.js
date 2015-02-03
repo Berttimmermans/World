@@ -7,7 +7,7 @@
     
     // Map 
     this.map = {
-      "size": 0.3,
+      "size": 0.5,
       "seed" : { "width": 15, "height": 15 },
       "loops" : 4,
       "smoothLoops" : 1,
@@ -18,7 +18,9 @@
     this.camera = {
       "x" : 0, "y" : 0, "z" : 0,
       "rx" : 0, "ry" : -Math.PI*0.75, "rz" : 0,
-      "drop" : 0
+      "drop" : 0, 
+      "height" : 2,
+      "jump" : 0
     };
     
     this.speed = 0.08;

@@ -275,6 +275,7 @@
     material.opacity = 0.8;
     
     var water = new THREE.Mesh(new THREE.PlaneBufferGeometry(width*this.scale, depth*this.scale), material );
+    water.material.side = THREE.DoubleSide;
     water.rotation.x = -90 * Math.PI / 180;
     water.position.set(((width*this.scale)/2)-0.5, this.scale*6.7, ((width*this.scale)/2)-0.5);
     return water;
@@ -298,11 +299,13 @@
   });
   
   Render.prototype.updateCamera = (function(camera){
-    
       
-    if(camera.drop >= 0) camera.drop -= 0.1;
+    if(camera.drop > 0) camera.drop -= 0.1;
+    if(camera.jump > 0) camera.jump -= 0.1;
     
-		this.camera.position.set(camera.x*this.scale, (camera.y+camera.drop)*this.scale, camera.z*this.scale );
+    var y = camera.y+camera.drop+camera.height+camera.jump;
+    
+		this.camera.position.set( (camera.x*this.scale)-0.5, y*this.scale, (camera.z*this.scale)-0.5 );
 		this.camera.rotation.set(camera.rx, camera.ry, camera.rz );
 		this.camera.updateProjectionMatrix();
   
