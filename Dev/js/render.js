@@ -4,6 +4,7 @@
     
     this.size = map.size;
     this.color = map.color;
+    this.waterLevel = map.waterLevel;
     this.range = this.color.length;
     this.scale = 1;
     
@@ -26,7 +27,8 @@
 		
 		// Setup Three Js scene
 		this.scene = new THREE.Scene();
-    this.scene.fog = new THREE.FogExp2( 0xaee7e4, 0.0008 );
+		this.fog = THREE.FogExp2( 0xaee7e4, 0.0008 );
+    this.scene.fog = this.fog;
     
     // Setup Three JS camera
 		this.camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.05, 10000 );
@@ -56,8 +58,8 @@
   
   Render.prototype.setupLights = (function(){
     
-    var hemiLight = new THREE.HemisphereLight( 0xaee7e4, 0x222222, 0.9);
-    this.scene.add(hemiLight); 
+    this.hemiLight = new THREE.HemisphereLight( 0xaee7e4, 0x222222, 0.9);
+    this.scene.add(this.hemiLight); 
     
     function setLight(x,y,z){
       var light = new THREE.DirectionalLight(0xFFFFFF, 0.3);
@@ -273,12 +275,12 @@
   Render.prototype.addWater = (function(width, depth){
     
     var material = new THREE.MeshLambertMaterial({ color: 0x30416B, ambient: 0x444444, transparent: true });
-    material.opacity = 0.8;
+    material.opacity = 0.9;
     
     var water = new THREE.Mesh(new THREE.PlaneBufferGeometry(width*this.scale, depth*this.scale), material );
     water.material.side = THREE.DoubleSide;
     water.rotation.x = -90 * Math.PI / 180;
-    water.position.set(((width*this.scale)/2)-0.5, this.scale*6.7, ((width*this.scale)/2)-0.5);
+    water.position.set(((width*this.scale)/2)-0.5, this.scale*this.waterLevel, ((width*this.scale)/2)-0.5);
     return water;
     
   });
@@ -295,6 +297,15 @@
   Render.prototype.render = (function(camera){
 		
 		this.updateCamera(camera);
+		
+		if(camera.y+this.physics.get() < this.waterLevel-camera.height){
+			this.hemiLight.color.setHex(0x000000 );
+			this.hemiLight.groundColor.setHex( 0x000000 );
+		} else {
+			this.hemiLight.color.setHex(0xaee7e4 );
+			this.hemiLight.groundColor.setHex( 0x222222 );
+		}
+		
 		this.renderer.render( this.scene, this.camera );
     
   });
