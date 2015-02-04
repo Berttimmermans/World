@@ -27,8 +27,7 @@
 		
 		// Setup Three Js scene
 		this.scene = new THREE.Scene();
-		this.fog = THREE.FogExp2( 0xaee7e4, 0.0008 );
-    this.scene.fog = this.fog;
+    this.scene.fog = new THREE.Fog( 0xaee7e4, 0, 200 );
     
     // Setup Three JS camera
 		this.camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.05, 10000 );
@@ -277,10 +276,10 @@
     var material = new THREE.MeshLambertMaterial({ color: 0x30416B, ambient: 0x444444, transparent: true });
     material.opacity = 0.9;
     
-    var water = new THREE.Mesh(new THREE.PlaneBufferGeometry(width*this.scale, depth*this.scale), material );
+    var water = new THREE.Mesh(new THREE.BoxGeometry(width*this.scale, depth*this.scale, this.scale*this.waterLevel ), material );
     water.material.side = THREE.DoubleSide;
     water.rotation.x = -90 * Math.PI / 180;
-    water.position.set(((width*this.scale)/2)-0.5, this.scale*this.waterLevel, ((width*this.scale)/2)-0.5);
+    water.position.set(((width*this.scale)/2)-0.5, (this.scale*this.waterLevel)/2, ((width*this.scale)/2)-0.5);
     return water;
     
   });
@@ -301,9 +300,11 @@
 		if(camera.y+this.physics.get() < this.waterLevel-camera.height){
 			this.hemiLight.color.setHex(0x000000 );
 			this.hemiLight.groundColor.setHex( 0x000000 );
+      this.scene.fog = new THREE.Fog( 0x30416B, -5, 6 );
 		} else {
 			this.hemiLight.color.setHex(0xaee7e4 );
 			this.hemiLight.groundColor.setHex( 0x222222 );
+      this.scene.fog = new THREE.Fog( 0xaee7e4, 0, 200 );
 		}
 		
 		this.renderer.render( this.scene, this.camera );
