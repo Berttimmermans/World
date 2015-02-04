@@ -1,10 +1,11 @@
 (function(){
   
-  function Collision(map, camera){
+  function Collision(map, camera, physics){
     
     this.size = map.size;
     this.range = map.color.length;
     this.camera = camera;
+    this.physics = physics;
     this.squareSize = 5;
     
   }
@@ -67,7 +68,7 @@
     if(this.validateY(y)){
       this.camera.x = x;
       this.camera.z = z;
-      if(this.camera.y > y) this.camera.drop = this.camera.y-y;
+      this.physics.initFall(y);
       this.camera.y = y;
       return true;
     } else {
@@ -92,11 +93,10 @@
   
   Collision.prototype.validateY = (function(y){
   
-    if(this.camera.y+this.camera.jump >= y) return true;
+    if(this.camera.y+this.physics.getJump() >= y) return true;
     return false;
   
   });
-  
   
   window.Collision = Collision;
   

@@ -1,6 +1,6 @@
 (function(){
   
-  function Render(map, camera){
+  function Render(map, camera, physics){
     
     this.size = map.size;
     this.color = map.color;
@@ -12,6 +12,7 @@
     this.matrix = new THREE.Matrix4();
     
     this.cameraData = camera;
+    this.physics = physics;
     
   }
   
@@ -299,12 +300,8 @@
   });
   
   Render.prototype.updateCamera = (function(camera){
-      
-    if(camera.drop > 0) camera.drop -= 0.1;
-    if(camera.jump > 0) camera.jump -= 0.1;
-    if(camera.jump < 0) camera.jump = 0;
     
-    var y = camera.y+camera.drop+camera.height+camera.jump;
+    var y = camera.y+camera.height+this.physics.get(); 
     
 		this.camera.position.set( (camera.x*this.scale)-0.5, y*this.scale, (camera.z*this.scale)-0.5 );
 		this.camera.rotation.set(camera.rx, camera.ry, camera.rz );

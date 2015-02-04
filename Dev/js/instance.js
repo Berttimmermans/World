@@ -18,12 +18,12 @@
     this.camera = {
       "x" : 0, "y" : 0, "z" : 0,
       "rx" : 0, "ry" : -Math.PI*0.75, "rz" : 0,
-      "drop" : 0, 
-      "height" : 2,
-      "jump" : 0
+      "height" : 2
     };
     
     this.speed = 0.08;
+    
+    this.gravity = 1;
     
     this.touch = ('ontouchstart' in window) || (navigator.MaxTouchPoints > 0) || (navigator.msMaxTouchPoints > 0)? true : false;
     
@@ -32,13 +32,14 @@
   Instance.prototype.Init = (function (){
   
     this.generator = new Generator(this.map);
-    this.collision = new Collision(this.map, this.camera);
-    this.render = new Render(this.map, this.camera);
-    this.controls = new Controls(this);
+    
+    this.physics = new Physics(this.camera, this.gravity);
+    this.collision = new Collision(this.map, this.camera, this.physics);
+    this.render = new Render(this.map, this.camera, this.physics);
+    this.controls = new Controls(this, this.physics);
     
     // Generate map data
     this.data = this.generator.New();
-    //console.log(JSON.stringify(this.data));
     
     // Build map
     this.render.init(this.data); 
@@ -47,8 +48,8 @@
     this.collision.init(this.data);
     
     // Render map
-    //this.render.render(this.camera);
     this.animate();
+    //this.render.render(this.camera);
     
   });
   
@@ -58,7 +59,8 @@
     requestAnimationFrame( function(){
       return self.animate();
     });  
-    this.controls.validate();     
+    this.controls.validate();
+    this.physics.update();
     this.render.render(this.camera);
     
   });
