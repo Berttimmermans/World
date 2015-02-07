@@ -1,6 +1,6 @@
 (function(){
   
-  function Render(map, camera, physics){
+  function Render(map, camera, physics, touch){
     
     this.size = map.size;
     this.color = map.color;
@@ -14,6 +14,7 @@
     
     this.cameraData = camera;
     this.physics = physics;
+    this.touch = touch;
     
   }
   
@@ -288,7 +289,8 @@
     
 		this.camera.aspect = window.innerWidth / window.innerHeight;
 		this.camera.updateProjectionMatrix();
-		this.renderer.setSize( window.innerWidth, window.innerHeight );
+		var multiplier = (this.touch)? window.devicePixelRatio : 1;
+		this.renderer.setSize( window.innerWidth*multiplier, window.innerHeight*multiplier );
 		this.render(this.cameraData);
     
   });

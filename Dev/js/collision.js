@@ -6,7 +6,7 @@
     this.range = map.color.length;
     this.camera = camera;
     this.physics = physics;
-    this.squareSize = 5;
+    this.squareSize = 3;
     
   }
   

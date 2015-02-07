@@ -35,7 +35,7 @@
     
     this.physics = new Physics(this.camera, this.gravity);
     this.collision = new Collision(this.map, this.camera, this.physics);
-    this.render = new Render(this.map, this.camera, this.physics);
+    this.render = new Render(this.map, this.camera, this.physics, this.touch);
     this.controls = new Controls(this, this.physics);
     
     // Generate map data

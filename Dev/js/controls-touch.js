@@ -19,6 +19,8 @@
   
   TouchControls.prototype.build = (function(){
     
+    document.body.className = "touch";
+    
 		this.$controls = document.createElement("div");
 		this.$controls.className = "controls";
 		document.body.appendChild(this.$controls);
