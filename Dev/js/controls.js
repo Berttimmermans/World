@@ -80,7 +80,7 @@
     if(this.events.down || this.events.up || this.events.left || this.events.right) this.collision.validateOptions(x,z);
     
     if(this.events.jump){
-      this.physics.initJump();
+      this.events.jump = this.physics.initJump();
     }
     
   });

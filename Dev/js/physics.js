@@ -22,6 +22,7 @@
     if(this.jump.active == false && this.getFall() == 0) {
       this.jump.active = true;
     }
+    return false;
   });
   
   Physics.prototype.initFall = (function(y){

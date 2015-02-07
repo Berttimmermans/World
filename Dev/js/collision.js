@@ -79,14 +79,14 @@
   
   Collision.prototype.validateX = (function(x){
   
-    if(x >= 0 && x <= parseInt(this.data[0].length*this.size)-1) return true;
+    if(x >= 0 && x <= parseInt(this.data[0].length*this.size)) return true;
     return false; 
   
   });
   
   Collision.prototype.validateZ = (function(z){
   
-    if(z >= 0 && z <= parseInt(this.data.length*this.size)-1) return true;
+    if(z >= 0 && z <= parseInt(this.data.length*this.size)) return true;
     return false; 
   
   });

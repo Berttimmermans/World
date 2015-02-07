@@ -31,10 +31,6 @@
 		this.$dPadStick.className = "dPad-stick";
 		this.$dPad.appendChild(this.$dPadStick);
 		this.$controls.appendChild(this.$dPad);
-		
-		this.$action = document.createElement("a");
-		this.$action.className = "action";
-		this.$controls.appendChild(this.$action);
   
   });
   
@@ -53,17 +49,27 @@
 		  return event.preventDefault(); 
     }, false);
     
-    // Camera rotation
+    // Camera rotation and jump
+    
+    var timer;
+    var tap = false;
     
     this.$controls.addEventListener("touchstart", function(e) {	
       touch.y = e.changedTouches[0].pageY;
       touch.x = e.changedTouches[0].pageX;
       touch.state = 'start';
+      tap = true;
+      clearTimeout(timer);
+      timer = setTimeout(function(){
+        tap = false;
+      }, 200);
 		  return event.preventDefault(); 
     }, false);
     
     this.$controls.addEventListener("touchend", function(e) {	
       touch.state = 'end';
+      if(tap) events.jump = true;
+      tap = false;
     }, false);
     
     this.$controls.addEventListener("touchmove", function(e) {	
@@ -129,18 +135,6 @@
 			self.translateStick(0,0);
 			
 		}, false);
-		
-		// Action button (Jump)
-		
-		action.addEventListener("touchstart", function(){
-			events.jump = true;
-			action.classList.add('active');
-		});
-		
-		action.addEventListener("touchend", function(){
-			events.jump = false;
-			action.classList.remove('active');
-		});
     
   
   });

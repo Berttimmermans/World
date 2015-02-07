@@ -88,29 +88,4 @@ body{
       }
 		}
 	}
-	
-	a {
-	  display: block;
-	  background: rgba(255,255,255, 0.1);
-    border: 1px solid rgba(0,0,0, 0.1);
-    text-align: center;
-    font-weight: bold;
-    font-size: 30px;
-    color: rgba(0,0,0, 0.1);
-    -webkit-text-stroke: 1px rgba(0,0,0, 0.1);
-    text-stroke: 1px rgba(0,0,0, 0.1);
-    
-    &.active{
-  		background: rgba(255,255,255, 0.3);
-  		color: rgba(0,0,0, 0.4);
-		}
-		
-		&.action{
-		  position: absolute;
-		  right: 60px; bottom: 60px;
-  		width: 80px; height: 80px;
-  		line-height: 80px;
-  		border-radius: 40px;
-		}
-	}
 }
