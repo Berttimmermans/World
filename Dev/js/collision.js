@@ -29,7 +29,7 @@
     
     for(var y in this.data){
       for(var x in this.data[y]){
-        var color = this.data[y][x]*10;
+        var color = this.data[y][x];
         this.heightMapContext.beginPath();
         this.heightMapContext.rect(this.squareSize*x, this.squareSize*y, this.squareSize, this.squareSize);
         this.heightMapContext.fillStyle = 'rgba('+color+','+color+','+color+',1)';
@@ -47,7 +47,7 @@
     x = parseInt(x*this.squareSize);
     z = parseInt(z*this.squareSize);
     var data = this.heightMapContext.getImageData(x, z, 1, 1).data;
-    return data[0]/10;
+    return data[0];
   
   });
   
