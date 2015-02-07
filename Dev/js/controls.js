@@ -62,12 +62,12 @@
     var x, z;
     
     if(this.events.down) {
-      x = this.camera.x + (-1*(this.speed * Math.sin((-this.angle) * Math.PI / 180)));
-      z = this.camera.z + (-1*(this.speed * Math.cos((-this.angle) * Math.PI / 180)));
-    }
-    if(this.events.up) {
       x = this.camera.x + (1*(this.speed * Math.sin((-this.angle) * Math.PI / 180)));
       z = this.camera.z + (1*(this.speed * Math.cos((-this.angle) * Math.PI / 180)));
+    }
+    if(this.events.up) {
+      x = this.camera.x + (-1*(this.speed * Math.sin((-this.angle) * Math.PI / 180)));
+      z = this.camera.z + (-1*(this.speed * Math.cos((-this.angle) * Math.PI / 180)));
     }
     if(this.events.right) {
       x = this.camera.x + (1*(this.speed * Math.cos((this.angle) * Math.PI / 180)));

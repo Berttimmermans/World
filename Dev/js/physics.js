@@ -42,7 +42,7 @@
   
   Physics.prototype.updateJump = (function(){
     if(this.jump.active){
-      this.jump.step += 0.05*this.gravity;
+      this.jump.step += 0.04*this.gravity;
       if(this.jump.step >= 1) {
         this.jump.active = false;
         this.jump.step = 0;
