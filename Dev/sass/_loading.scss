@@ -115,6 +115,12 @@
   }
 }
 
+.touch #cube{    
+  animation: none;
+  -moz-animation: none;
+  -webkit-animation: none;
+}
+
 @-moz-keyframes rotateCube {
 	0%{
 		transform: rotateX(-25deg) rotateY(-45deg) rotateZ(0deg);
