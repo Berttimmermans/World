@@ -2,7 +2,9 @@
 
 window.onload = function(){
   
-  var instance = new Instance();
-  instance.Init();
+  setTimeout(function(){
+    var instance = new Instance();
+    instance.Init();
+  }, 1)
 
 };
