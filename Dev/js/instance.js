@@ -7,7 +7,7 @@
     
     // Map 
     this.map = {
-      "size": 0.4,
+      "size": 0.5,
       "seed" : { "width": 15, "height": 15 },
       "loops" : 4,
       "smoothLoops" : 1,
