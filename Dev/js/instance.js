@@ -51,6 +51,9 @@
     
     // Render map
     this.animate();
+    
+    // Hide loading
+    document.getElementById("loading").style.display = 'none';
     //this.render.render(this.camera);
     
   });
