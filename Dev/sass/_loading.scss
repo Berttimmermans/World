@@ -115,6 +115,16 @@
   }
 }
 
+@media (min-width: 1024px) {
+  .loading{
+    .cube-holder #cube{  
+      animation: rotateCube 2s infinite ease-in-out;
+      -moz-animation: rotateCube 2s infinite ease-in-out;
+      -webkit-animation: rotateCube 2s infinite ease-in-out;
+    }
+  }
+}
+
 @-moz-keyframes rotateCube {
 	0%{
 		transform: rotateX(-25deg) rotateY(-45deg) rotateZ(0deg);
