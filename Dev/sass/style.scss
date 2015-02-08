@@ -10,7 +10,13 @@ body{
   overflow: hidden;
   width: 100%;
   height: 100%;
-  background: #aee7e4;
+  background: #358937; 
+  background: -moz-linear-gradient(top, #358937 0%, #c3b361 100%); 
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#358937), color-stop(100%,#c3b361)); 
+  background: -webkit-linear-gradient(top, #358937 0%,#c3b361 100%); 
+  background: -o-linear-gradient(top, #358937 0%,#c3b361 100%);
+  background: -ms-linear-gradient(top, #358937 0%,#c3b361 100%); 
+  background: linear-gradient(to bottom, #358937 0%,#c3b361 100%);
 }
 
 .touch canvas{

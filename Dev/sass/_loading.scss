@@ -54,9 +54,9 @@
       -moz-transform: rotateX(-25deg) rotateY(-45deg);
       transform: rotateX(-25deg) rotateY(-45deg);
       
-      animation: rotateCube 2s infinite ease-in-out;
+      /*animation: rotateCube 2s infinite ease-in-out;
       -moz-animation: rotateCube 2s infinite ease-in-out;
-      -webkit-animation: rotateCube 2s infinite ease-in-out;
+      -webkit-animation: rotateCube 2s infinite ease-in-out;*/
     }
     
     .face {
@@ -113,12 +113,6 @@
       transform: rotateX(-90deg) rotate(180deg) translateZ($size/2);
     }
   }
-}
-
-.touch #cube{    
-  animation: none;
-  -moz-animation: none;
-  -webkit-animation: none;
 }
 
 @-moz-keyframes rotateCube {
