@@ -4,6 +4,8 @@
     
     this.size = map.size;
     this.color = map.color;
+    this.skyColor = map.skyColor;
+    this.brightness = map.brightness;
     this.waterLevel = map.waterLevel;
     this.range = this.color.length;
     this.scale = 1;
@@ -23,12 +25,12 @@
     // Setup Three Js renderer
     this.renderer = new THREE.WebGLRenderer({ antialias: true });
 		this.renderer.setSize( window.innerWidth, window.innerHeight );
-		this.renderer.setClearColor( 0xaee7e4 );
+		this.renderer.setClearColor( this.skyColor );
 		document.body.appendChild( this.renderer.domElement );
 		
 		// Setup Three Js scene
 		this.scene = new THREE.Scene();
-    this.scene.fog = new THREE.Fog( 0xaee7e4, 0, 200 );
+    this.scene.fog = new THREE.Fog( this.skyColor, 0, 200 );
     
     // Setup Three JS camera
 		this.camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.05, 10000 );
@@ -61,20 +63,21 @@
   
   Render.prototype.setupLights = (function(){
     
-    this.hemiLight = new THREE.HemisphereLight( 0xaee7e4, 0x222222, 0.9);
+    var brightness = this.brightness;
+    this.hemiLight = new THREE.HemisphereLight( 0xaee7e4, 0x222222, (0.9*brightness));
     this.scene.add(this.hemiLight); 
     
-    function setLight(x,y,z){
-      var light = new THREE.DirectionalLight(0xFFFFFF, 0.3);
+    function setLight(x,y,z,brightness){
+      var light = new THREE.DirectionalLight(0xFFFFFF, (0.3*brightness));
 		  light.position.set(x,y,z);
 		  light.lookAt(new THREE.Vector3(0,0,0));
       return light;
     }
     
-    this.scene.add(setLight(0,10*this.scale,0));
-    this.scene.add(setLight(0,-10*this.scale,0));
-    this.scene.add(setLight(-10*this.scale,0,0));
-    this.scene.add(setLight(10*this.scale,0,0));
+    this.scene.add(setLight(0,10*this.scale,0,brightness));
+    this.scene.add(setLight(0,-10*this.scale,0,brightness));
+    this.scene.add(setLight(-10*this.scale,0,0,brightness));
+    this.scene.add(setLight(10*this.scale,0,0,brightness));
   
   });
   
@@ -309,7 +312,7 @@
 		} else {
 			this.hemiLight.color.setHex(0xaee7e4 );
 			this.hemiLight.groundColor.setHex( 0x222222 );
-      this.scene.fog = new THREE.Fog( 0xaee7e4, 0, 200 );
+      this.scene.fog = new THREE.Fog( this.skyColor, 0, 200 );
 		}
 		
 		this.renderer.render( this.scene, this.camera );
